@@ -229,31 +229,105 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../js/chart.min.js"></script>
     <script>
         // Verificar si el usuario está logueado como admin
         function checkAdminAuth() {
-            const user = JSON.parse(localStorage.getItem('currentUser') || '{}');
-            if (!user.email || user.role !== 'admin') {
-                alert('Acceso denegado. Solo administradores pueden acceder a esta página.');
-                window.location.href = '../index.html';
+            try {
+                console.log('🔍 Checking admin authentication...');
+                
+                const userFromLocal = localStorage.getItem('currentUser');
+                const userFromSession = sessionStorage.getItem('currentUser');
+                
+                console.log('📦 localStorage currentUser:', userFromLocal);
+                console.log('📦 sessionStorage currentUser:', userFromSession);
+                
+                if (!userFromLocal && !userFromSession) {
+                    console.log('❌ No user data found in storage');
+                    alert('No hay sesión activa. Redirigiendo al login...');
+                    window.location.href = '../pages/login.html';
+                    return false;
+                }
+                
+                const userJson = userFromLocal || userFromSession;
+                console.log('📄 Raw user JSON:', userJson);
+                
+                let user;
+                try {
+                    user = JSON.parse(userJson);
+                    console.log('👤 Parsed user:', user);
+                } catch (parseError) {
+                    console.error('❌ Error parsing user data:', parseError);
+                    alert('Datos de sesión corruptos. Limpiando y redirigiendo...');
+                    localStorage.removeItem('currentUser');
+                    sessionStorage.removeItem('currentUser');
+                    window.location.href = '../pages/login.html';
+                    return false;
+                }
+                
+                // Check if user has admin role
+                if (!user.email) {
+                    console.log('❌ No email found in user data');
+                    alert('Datos de usuario incompletos. Redirigiendo al login...');
+                    window.location.href = '../pages/login.html';
+                    return false;
+                }
+                
+                if (user.role !== 'admin') {
+                    console.log('❌ User role is not admin:', user.role);
+                    alert('Acceso denegado. Tu rol es: ' + user.role + '. Solo administradores pueden acceder.');
+                    window.location.href = '../index.html';
+                    return false;
+                }
+                
+                console.log('✅ Admin authentication successful for:', user.email);
+                
+                // Update welcome message
+                const welcomeElement = document.querySelector('.sidebar .text-white h5, .sidebar h5');
+                if (welcomeElement) {
+                    welcomeElement.textContent = 'Bienvenido, ' + (user.name || 'Admin');
+                }
+                
+                return true;
+                
+            } catch (error) {
+                console.error('💥 Unexpected error in checkAdminAuth:', error);
+                alert('Error verificando autenticación. Redirigiendo al login...');
+                window.location.href = '../pages/login.html';
                 return false;
             }
-            return true;
         }
 
         // Cerrar sesión
         function logout() {
             localStorage.removeItem('currentUser');
+            sessionStorage.removeItem('currentUser');
             alert('Sesión cerrada correctamente');
             window.location.href = '../index.html';
         }
 
         // Inicializar gráficos
         function initCharts() {
-            // Gráfico de ventas
-            const salesCtx = document.getElementById('salesChart').getContext('2d');
-            new Chart(salesCtx, {
+            console.log('📊 Initializing charts...');
+            
+            // Check if Chart.js is loaded
+            if (typeof Chart === 'undefined') {
+                console.error('❌ Chart.js not loaded!');
+                showChartError();
+                return;
+            }
+            
+            try {
+                // Gráfico de ventas
+                console.log('📈 Creating sales chart...');
+                const salesCanvas = document.getElementById('salesChart');
+                if (!salesCanvas) {
+                    console.error('❌ Sales chart canvas not found!');
+                    return;
+                }
+                
+                const salesCtx = salesCanvas.getContext('2d');
+                const salesChart = new Chart(salesCtx, {
                 type: 'line',
                 data: {
                     labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
@@ -274,10 +348,18 @@
                     }
                 }
             });
+            console.log('✅ Sales chart created successfully');
 
-            // Gráfico de productos más vendidos
-            const productsCtx = document.getElementById('productsChart').getContext('2d');
-            new Chart(productsCtx, {
+            // Gráfico de productos más vendidos  
+            console.log('🍩 Creating products doughnut chart...');
+            const productsCanvas = document.getElementById('productsChart');
+            if (!productsCanvas) {
+                console.error('❌ Products chart canvas not found!');
+                return;
+            }
+            
+            const productsCtx = productsCanvas.getContext('2d');
+            const productsChart = new Chart(productsCtx, {
                 type: 'doughnut',
                 data: {
                     labels: ['Chanel No. 5', 'Dior Sauvage', 'Tom Ford Black Orchid', 'Versace Eros', 'Others'],
@@ -301,29 +383,132 @@
                     }
                 }
             });
+            console.log('✅ Products chart created successfully');
+            
+            } catch (error) {
+                console.error('💥 Error creating charts:', error);
+                showChartError();
+            }
+        }
+        
+        function showChartError() {
+            const chartsSection = document.querySelector('.row:has(canvas)');
+            if (chartsSection) {
+                chartsSection.innerHTML = `
+                    <div class="col-12">
+                        <div class="alert alert-warning">
+                            <h4><i class="fas fa-exclamation-triangle me-2"></i>Error en Gráficos</h4>
+                            <p>No se pudieron cargar los gráficos. Esto puede deberse a:</p>
+                            <ul>
+                                <li>Chart.js no se cargó correctamente</li>
+                                <li>Error de conexión a internet</li>
+                                <li>Problema con el canvas HTML</li>
+                            </ul>
+                            <button class="btn btn-primary" onclick="location.reload()">
+                                <i class="fas fa-refresh me-2"></i>Recargar Página
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
         }
 
         // Cargar datos del dashboard
         function loadDashboardData() {
-            // Aquí puedes hacer llamadas a tu API para obtener datos reales
-            // Por ahora usaremos datos de ejemplo
-            updateStats();
-            loadRecentOrders();
+            console.log('📊 Loading dashboard data...');
+            try {
+                updateStats();
+                loadRecentOrders();
+                console.log('✅ Dashboard data loaded successfully');
+            } catch (error) {
+                console.error('❌ Error loading dashboard data:', error);
+            }
         }
 
-        function updateStats() {
-            // Simular datos actualizados
-            const stats = {
-                sales: '$' + (Math.random() * 50000 + 10000).toFixed(0),
-                orders: Math.floor(Math.random() * 300 + 100),
-                products: Math.floor(Math.random() * 150 + 50),
-                users: Math.floor(Math.random() * 500 + 200)
-            };
+        async function updateStats() {
+            console.log('📈 Updating statistics...');
+            
+            try {
+                // Try to load real product data
+                const response = await fetch('../js/perfumes.json');
+                let productCount = 45; // default
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    productCount = data.perfumes ? data.perfumes.length : 45;
+                    console.log('📦 Loaded real product count:', productCount);
+                } else {
+                    console.warn('⚠️ Could not load products, using default count');
+                }
+                
+                // Generate realistic data based on our perfume store
+                const stats = {
+                    sales: '$' + (Math.random() * 30000 + 25000).toFixed(0).replace(/\B(?=(\d{3})+(?!\d))/g, ','),
+                    orders: Math.floor(Math.random() * 100 + 150),
+                    products: productCount,
+                    users: Math.floor(Math.random() * 200 + 300)
+                };
 
-            document.getElementById('totalSales').textContent = stats.sales;
-            document.getElementById('totalOrders').textContent = stats.orders;
-            document.getElementById('totalProducts').textContent = stats.products;
-            document.getElementById('totalUsers').textContent = stats.users;
+                // Update each stat with animation
+                animateCounter('totalSales', stats.sales);
+                animateCounter('totalOrders', parseInt(stats.orders));
+                animateCounter('totalProducts', stats.products);
+                animateCounter('totalUsers', stats.users);
+                
+                console.log('✅ Statistics updated:', stats);
+                
+            } catch (error) {
+                console.error('❌ Error updating stats:', error);
+                // Fallback to default values
+                const fallbackStats = {
+                    sales: '$45,230',
+                    orders: 156,
+                    products: 45,
+                    users: 342
+                };
+                
+                animateCounter('totalSales', fallbackStats.sales);
+                animateCounter('totalOrders', fallbackStats.orders);
+                animateCounter('totalProducts', fallbackStats.products);
+                animateCounter('totalUsers', fallbackStats.users);
+            }
+        }
+        
+        function animateCounter(elementId, targetValue) {
+            const element = document.getElementById(elementId);
+            if (!element) {
+                console.warn(`⚠️ Element ${elementId} not found`);
+                return;
+            }
+            
+            // For sales (string with $ and commas)
+            if (typeof targetValue === 'string' && targetValue.includes('$')) {
+                element.textContent = targetValue;
+                element.classList.add('text-success');
+                return;
+            }
+            
+            // For numbers, animate counting up
+            const startValue = 0;
+            const duration = 2000; // 2 seconds
+            const startTime = performance.now();
+            
+            function updateValue(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                // Ease out animation
+                const easedProgress = 1 - Math.pow(1 - progress, 3);
+                const currentValue = Math.floor(startValue + (targetValue - startValue) * easedProgress);
+                
+                element.textContent = currentValue.toLocaleString();
+                
+                if (progress < 1) {
+                    requestAnimationFrame(updateValue);
+                }
+            }
+            
+            requestAnimationFrame(updateValue);
         }
 
         function loadRecentOrders() {
@@ -333,11 +518,58 @@
 
         // Inicializar cuando cargue la página
         document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Dashboard DOM loaded');
+            
+            // Show loading indicator
+            showLoadingIndicator();
+            
             if (checkAdminAuth()) {
-                loadDashboardData();
-                initCharts();
+                // Wait for Chart.js to load, then initialize
+                waitForChartJS(() => {
+                    loadDashboardData();
+                    initCharts();
+                    hideLoadingIndicator();
+                });
             }
         });
+        
+        function showLoadingIndicator() {
+            const chartsSection = document.querySelector('.row:has(canvas)');
+            if (chartsSection) {
+                const loader = document.createElement('div');
+                loader.id = 'dashboardLoader';
+                loader.className = 'col-12 text-center py-5';
+                loader.innerHTML = `
+                    <div class="spinner-border text-primary mb-3" role="status">
+                        <span class="visually-hidden">Cargando...</span>
+                    </div>
+                    <h5 class="text-muted">Cargando dashboard...</h5>
+                    <p class="text-muted">Inicializando gráficos y estadísticas</p>
+                `;
+                chartsSection.appendChild(loader);
+            }
+        }
+        
+        function hideLoadingIndicator() {
+            const loader = document.getElementById('dashboardLoader');
+            if (loader) {
+                loader.remove();
+            }
+        }
+        
+        function waitForChartJS(callback, maxAttempts = 10, attempt = 1) {
+            if (typeof Chart !== 'undefined') {
+                console.log('✅ Chart.js loaded successfully');
+                callback();
+            } else if (attempt < maxAttempts) {
+                console.log(`⏳ Waiting for Chart.js... (attempt ${attempt}/${maxAttempts})`);
+                setTimeout(() => waitForChartJS(callback, maxAttempts, attempt + 1), 500);
+            } else {
+                console.error('❌ Chart.js failed to load after maximum attempts');
+                hideLoadingIndicator();
+                showChartError();
+            }
+        }
     </script>
 </body>
 </html>

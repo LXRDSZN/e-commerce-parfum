@@ -176,8 +176,9 @@ class ShoppingCart {
 
     // Update cart dropdown/sidebar
     updateCartDropdown() {
-        const cartItems = document.getElementById('cart-items');
-        const cartTotal = document.getElementById('cart-total');
+        const cartItems = document.getElementById('cartItems') || document.getElementById('cart-items');
+        const cartTotal = document.getElementById('cartSubtotal') || document.getElementById('cart-total');
+        const checkoutBtn = document.getElementById('checkoutBtn');
 
         if (cartItems) {
             if (this.items.length === 0) {
@@ -208,7 +209,12 @@ class ShoppingCart {
 
         if (cartTotal) {
             const totals = this.calculateTotals();
-            cartTotal.innerHTML = `$${totals.total.toFixed(2)}`;
+            cartTotal.innerHTML = `$${totals.total.toFixed(2)} MXN`;
+        }
+        
+        // Update checkout button
+        if (checkoutBtn) {
+            checkoutBtn.disabled = this.items.length === 0;
         }
     }
 

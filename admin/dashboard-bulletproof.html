@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📊 Dashboard - Élite Perfumería</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 2.5rem 2rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 35px rgba(0,0,0,0.15);
+        }
+        
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: var(--accent);
+        }
+        
+        .stat-card.sales { --accent: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .stat-card.orders { --accent: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .stat-card.products { --accent: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); }
+        .stat-card.users { --accent: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+        
+        .stat-icon {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 1rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            background: var(--accent);
+        }
+        
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            margin: 1rem 0 0.5rem;
+            background: var(--accent);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .stat-label {
+            color: #666;
+            font-size: 1rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .charts-section {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .chart-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        
+        .chart-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 2rem;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .bar-chart {
+            display: flex;
+            align-items: end;
+            justify-content: space-around;
+            height: 300px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 10px;
+            padding: 2rem 1rem 3rem;
+            margin: 1rem 0;
+            position: relative;
+        }
+        
+        .bar {
+            width: 60px;
+            border-radius: 8px 8px 0 0;
+            position: relative;
+            transition: all 0.6s ease;
+            background: linear-gradient(to top, #4facfe 0%, #00f2fe 100%);
+            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.3);
+        }
+        
+        .bar:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(79, 172, 254, 0.4);
+        }
+        
+        .bar::after {
+            content: attr(data-value);
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #333;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8rem;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .bar:hover::after {
+            opacity: 1;
+        }
+        
+        .bar-label {
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.9rem;
+            color: #666;
+            font-weight: 500;
+        }
+        
+        .donut-chart {
+            width: 250px;
+            height: 250px;
+            border-radius: 50%;
+            margin: 2rem auto;
+            position: relative;
+            background: conic-gradient(
+                #FF6384 0% 25%,
+                #36A2EB 25% 45%,
+                #FFCE56 45% 63%,
+                #4BC0C0 63% 78%,
+                #9966FF 78% 100%
+            );
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        
+        .donut-chart::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120px;
+            height: 120px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .donut-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            z-index: 1;
+        }
+        
+        .donut-center-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #333;
+        }
+        
+        .donut-center-label {
+            font-size: 0.8rem;
+            color: #666;
+            text-transform: uppercase;
+        }
+        
+        .legend {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 0.9rem;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: background 0.3s;
+        }
+        
+        .legend-item:hover {
+            background: #f8f9fa;
+        }
+        
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+        
+        .loading-animation {
+            display: inline-block;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        @media (max-width: 768px) {
+            .charts-section {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .legend {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div style="font-size: 2.5rem;">💎</div>
+                <div>
+                    <h1 style="margin: 0; font-size: 1.8rem;">Élite Perfumería</h1>
+                    <p style="margin: 0; opacity: 0.8;">Dashboard Administrativo</p>
+                </div>
+            </div>
+            <button class="btn" onclick="logout()" style="background: rgba(255,255,255,0.2);">
+                🚪 Cerrar Sesión
+            </button>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Statistics Cards -->
+        <div class="stats-grid">
+            <div class="stat-card sales">
+                <div class="stat-icon">💰</div>
+                <div class="stat-number loading-animation" id="totalSales">0</div>
+                <div class="stat-label">Ventas Totales</div>
+            </div>
+            
+            <div class="stat-card orders">
+                <div class="stat-icon">📦</div>
+                <div class="stat-number loading-animation" id="totalOrders">0</div>
+                <div class="stat-label">Pedidos Completados</div>
+            </div>
+            
+            <div class="stat-card products">
+                <div class="stat-icon">🧴</div>
+                <div class="stat-number loading-animation" id="totalProducts">0</div>
+                <div class="stat-label">Productos Activos</div>
+            </div>
+            
+            <div class="stat-card users">
+                <div class="stat-icon">👥</div>
+                <div class="stat-number loading-animation" id="totalUsers">0</div>
+                <div class="stat-label">Usuarios Registrados</div>
+            </div>
+        </div>
+
+        <!-- Charts Section -->
+        <div class="charts-section">
+            <div class="chart-card">
+                <div class="chart-title">
+                    📈 Ventas por Mes
+                </div>
+                <div class="bar-chart" id="salesChart">
+                    <div class="bar" style="height: 45%;" data-value="$25K">
+                        <div class="bar-label">Ene</div>
+                    </div>
+                    <div class="bar" style="height: 68%;" data-value="$32K">
+                        <div class="bar-label">Feb</div>
+                    </div>
+                    <div class="bar" style="height: 55%;" data-value="$28K">
+                        <div class="bar-label">Mar</div>
+                    </div>
+                    <div class="bar" style="height: 82%;" data-value="$35K">
+                        <div class="bar-label">Abr</div>
+                    </div>
+                    <div class="bar" style="height: 74%;" data-value="$42K">
+                        <div class="bar-label">May</div>
+                    </div>
+                    <div class="bar" style="height: 91%;" data-value="$48K">
+                        <div class="bar-label">Jun</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chart-card">
+                <div class="chart-title">
+                    🍩 Marcas Populares
+                </div>
+                <div class="donut-chart">
+                    <div class="donut-center">
+                        <div class="donut-center-number">100%</div>
+                        <div class="donut-center-label">Ventas</div>
+                    </div>
+                </div>
+                <div class="legend">
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #FF6384;"></div>
+                        <span><strong>Chanel</strong> 25%</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #36A2EB;"></div>
+                        <span><strong>Dior</strong> 20%</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #FFCE56;"></div>
+                        <span><strong>Versace</strong> 18%</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #4BC0C0;"></div>
+                        <span><strong>Creed</strong> 15%</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #9966FF;"></div>
+                        <span><strong>Otros</strong> 22%</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="chart-card">
+            <div class="chart-title">🛠️ Acciones Rápidas</div>
+            <div class="actions">
+                <button class="btn" onclick="window.open('../pages/perfumes.html', '_blank')">
+                    🧴 Ver Catálogo de Perfumes
+                </button>
+                <button class="btn" onclick="refreshData()">
+                    🔄 Actualizar Estadísticas
+                </button>
+                <button class="btn" onclick="window.open('../index.html', '_blank')">
+                    🏠 Ir a Tienda
+                </button>
+                <button class="btn" onclick="exportData()">
+                    📊 Exportar Datos
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Authentication check
+        function checkAuth() {
+            try {
+                const user = JSON.parse(localStorage.getItem('currentUser') || sessionStorage.getItem('currentUser') || '{}');
+                if (!user.email || user.role !== 'admin') {
+                    window.location.href = '../fix-login.html';
+                    return false;
+                }
+                console.log('✅ Admin authenticated:', user.email);
+                return true;
+            } catch (error) {
+                console.error('❌ Auth error:', error);
+                window.location.href = '../fix-login.html';
+                return false;
+            }
+        }
+
+        // Animate counter with easing
+        function animateCounter(elementId, targetValue, isPrice = false, duration = 2000) {
+            const element = document.getElementById(elementId);
+            if (!element) return;
+
+            let startValue = 0;
+            const startTime = performance.now();
+            
+            function updateCounter(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                // Ease out cubic
+                const easedProgress = 1 - Math.pow(1 - progress, 3);
+                const currentValue = Math.floor(startValue + (targetValue - startValue) * easedProgress);
+                
+                if (isPrice) {
+                    element.textContent = '$' + currentValue.toLocaleString();
+                } else {
+                    element.textContent = currentValue.toLocaleString();
+                }
+                
+                if (progress < 1) {
+                    requestAnimationFrame(updateCounter);
+                } else {
+                    // Remove loading animation
+                    element.classList.remove('loading-animation');
+                }
+            }
+            
+            requestAnimationFrame(updateCounter);
+        }
+
+        // Load dashboard data
+        async function loadData() {
+            console.log('📊 Loading dashboard data...');
+            
+            // Get real product count
+            let productCount = 45;
+            try {
+                const response = await fetch('../js/perfumes.json');
+                if (response.ok) {
+                    const data = await response.json();
+                    productCount = data.perfumes ? data.perfumes.length : 45;
+                    console.log('✅ Real product count:', productCount);
+                }
+            } catch (error) {
+                console.warn('⚠️ Using default product count:', error);
+            }
+
+            // Animate all statistics with staggered timing
+            setTimeout(() => animateCounter('totalSales', 52430, true, 2500), 200);
+            setTimeout(() => animateCounter('totalOrders', 248, false, 2000), 400);
+            setTimeout(() => animateCounter('totalProducts', productCount, false, 1800), 600);
+            setTimeout(() => animateCounter('totalUsers', 156, false, 2200), 800);
+        }
+
+        function refreshData() {
+            // Re-add loading animations
+            ['totalSales', 'totalOrders', 'totalProducts', 'totalUsers'].forEach(id => {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.classList.add('loading-animation');
+                    element.textContent = '0';
+                }
+            });
+            
+            // Reload data after a short delay
+            setTimeout(loadData, 500);
+        }
+
+        function exportData() {
+            const data = {
+                fecha: new Date().toISOString(),
+                ventas: '$52,430',
+                pedidos: 248,
+                productos: 45,
+                usuarios: 156,
+                ventasPorMes: [
+                    {mes: 'Enero', ventas: '$25,000'},
+                    {mes: 'Febrero', ventas: '$32,000'},
+                    {mes: 'Marzo', ventas: '$28,000'},
+                    {mes: 'Abril', ventas: '$35,000'},
+                    {mes: 'Mayo', ventas: '$42,000'},
+                    {mes: 'Junio', ventas: '$48,000'}
+                ],
+                marcasPopulares: [
+                    {marca: 'Chanel', porcentaje: 25},
+                    {marca: 'Dior', porcentaje: 20},
+                    {marca: 'Versace', porcentaje: 18},
+                    {marca: 'Creed', porcentaje: 15},
+                    {marca: 'Otros', porcentaje: 22}
+                ]
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'dashboard-data-' + new Date().toISOString().split('T')[0] + '.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function logout() {
+            localStorage.removeItem('currentUser');
+            sessionStorage.removeItem('currentUser');
+            alert('👋 Sesión cerrada correctamente');
+            window.location.href = '../index.html';
+        }
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Bulletproof dashboard initializing...');
+            
+            if (checkAuth()) {
+                // Start loading data after a short delay for visual effect
+                setTimeout(loadData, 800);
+            }
+        });
+    </script>
+</body>
+</html>

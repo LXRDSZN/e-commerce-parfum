@@ -264,9 +264,9 @@
                         };
                         
                         if (rememberMe) {
-                            localStorage.setItem('user', JSON.stringify(userData));
+                            localStorage.setItem('currentUser', JSON.stringify(userData));
                         } else {
-                            sessionStorage.setItem('user', JSON.stringify(userData));
+                            sessionStorage.setItem('currentUser', JSON.stringify(userData));
                         }
                         
                         // Redirect after success
@@ -319,7 +319,7 @@
             }
 
             // Check if user is already logged in
-            const storedUser = localStorage.getItem('user') || sessionStorage.getItem('user');
+            const storedUser = localStorage.getItem('currentUser') || sessionStorage.getItem('currentUser');
             if (storedUser) {
                 const userData = JSON.parse(storedUser);
                 showAlert(`Ya tienes una sesión activa como ${userData.name}. Redirigiendo...`, 'info');
