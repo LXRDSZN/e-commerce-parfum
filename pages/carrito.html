@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Carrito - Élite Perfumería</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- AOS Animation -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/main.css">
+    
+    <style>
+        .cart-item {
+            border-bottom: 1px solid #e9ecef;
+            padding: 1.5rem 0;
+            transition: all 0.3s ease;
+        }
+        
+        .cart-item:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .cart-item-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+        
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .quantity-btn {
+            width: 32px;
+            height: 32px;
+            border: 2px solid var(--primary-color);
+            background: white;
+            color: var(--primary-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .quantity-btn:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .quantity-input {
+            width: 50px;
+            text-align: center;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 5px;
+        }
+        
+        .cart-summary {
+            background: linear-gradient(135deg, #f8f9fa, white);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .checkout-btn {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            color: white;
+            font-weight: 600;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+        
+        .checkout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+        
+        .empty-cart {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #6c757d;
+        }
+        
+        .empty-cart i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand" href="../index.html">
+                <i class="fas fa-gem me-2"></i>
+                <span class="brand-text">Élite Perfumería</span>
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMain">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarMain">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item"><a class="nav-link" href="../index.html">Inicio</a></li>
+                    <li class="nav-item"><a class="nav-link" href="perfumes.html">Perfumes</a></li>
+                    <li class="nav-item"><a class="nav-link" href="ofertas.html">Ofertas</a></li>
+                </ul>
+                
+                <div class="navbar-nav ms-auto d-flex flex-row align-items-center">
+                    <div class="nav-item me-3">
+                        <a href="login.html"><i class="fas fa-user fs-5 text-dark"></i></a>
+                    </div>
+                    <div class="nav-item">
+                        <a href="carrito.html" class="position-relative">
+                            <i class="fas fa-shopping-bag fs-5 text-primary"></i>
+                            <span id="carrito-contador" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary">0</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="../index.html">Inicio</a></li>
+                            <li class="breadcrumb-item active">Mi Carrito</li>
+                        </ol>
+                    </nav>
+                    
+                    <h1 class="display-6 fw-bold mb-4">Mi Carrito de Compras</h1>
+                </div>
+            </div>
+            
+            <div class="row">
+                <!-- Cart Items -->
+                <div class="col-lg-8">
+                    <div id="cart-items" class="bg-white rounded-3 shadow-sm p-4">
+                        <!-- Cart items will be loaded here -->
+                    </div>
+                </div>
+                
+                <!-- Cart Summary -->
+                <div class="col-lg-4">
+                    <div class="cart-summary sticky-top" style="top: 2rem;">
+                        <h4 class="fw-bold mb-3">Resumen del Pedido</h4>
+                        
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Subtotal:</span>
+                            <span id="cart-subtotal">$0.00</span>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Envío:</span>
+                            <span id="cart-shipping">$5.00</span>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Descuento:</span>
+                            <span id="cart-discount" class="text-success">-$0.00</span>
+                        </div>
+                        
+                        <hr>
+                        
+                        <div class="d-flex justify-content-between mb-4">
+                            <strong>Total:</strong>
+                            <strong id="cart-total" class="text-primary">$0.00</strong>
+                        </div>
+                        
+                        <!-- Coupon Code -->
+                        <div class="mb-3">
+                            <label class="form-label">Código de Descuento</label>
+                            <div class="input-group">
+                                <input type="text" id="coupon-input" class="form-control" placeholder="Ingresa tu código">
+                                <button class="btn btn-outline-primary" onclick="applyCoupon()">Aplicar</button>
+                            </div>
+                        </div>
+                        
+                        <button class="checkout-btn" onclick="proceedToCheckout()">
+                            <i class="fas fa-credit-card me-2"></i>Proceder al Pago
+                        </button>
+                        
+                        <div class="text-center mt-3">
+                            <small class="text-muted">
+                                <i class="fas fa-shield-alt me-1"></i>
+                                Compra 100% segura
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer py-5">
+        <div class="container">
+            <div class="text-center">
+                <div class="navbar-brand mb-3">
+                    <i class="fas fa-gem me-2"></i>
+                    <span class="brand-text">Élite Perfumería</span>
+                </div>
+                <p class="text-muted">© 2024 Élite Perfumería. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/products.js"></script>
+    <script>
+        // Cart management for cart page
+        let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+        
+        // Load cart items on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadCartItems();
+            updateCartSummary();
+            actualizarContadorCarrito();
+        });
+        
+        // Load and display cart items
+        function loadCartItems() {
+            const cartContainer = document.getElementById('cart-items');
+            
+            if (carrito.length === 0) {
+                cartContainer.innerHTML = `
+                    <div class="empty-cart">
+                        <i class="fas fa-shopping-cart"></i>
+                        <h4>Tu carrito está vacío</h4>
+                        <p>¡Agrega algunos productos para comenzar tu compra!</p>
+                        <a href="../index.html" class="btn btn-primary">
+                            <i class="fas fa-arrow-left me-2"></i>Continuar Comprando
+                        </a>
+                    </div>
+                `;
+                return;
+            }
+            
+            let cartHTML = '<div class="cart-items-list">';
+            
+            carrito.forEach(item => {
+                cartHTML += `
+                    <div class="cart-item" data-id="${item.id}">
+                        <div class="row align-items-center">
+                            <div class="col-md-2">
+                                <img src="${item.imagen}" alt="${item.nombre}" class="cart-item-image">
+                            </div>
+                            <div class="col-md-4">
+                                <h6 class="mb-1">${item.nombre}</h6>
+                                <small class="text-muted">${item.marca} - ${item.ml}</small>
+                            </div>
+                            <div class="col-md-2">
+                                <span class="fw-bold text-primary">$${item.precio}</span>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="quantity-controls">
+                                    <button class="quantity-btn" onclick="updateQuantity(${item.id}, ${item.cantidad - 1})">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <input type="number" class="quantity-input" value="${item.cantidad}" 
+                                           onchange="updateQuantity(${item.id}, this.value)" min="1">
+                                    <button class="quantity-btn" onclick="updateQuantity(${item.id}, ${item.cantidad + 1})">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-1">
+                                <button class="btn btn-sm btn-outline-danger" onclick="removeFromCart(${item.id})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            cartHTML += '</div>';
+            cartContainer.innerHTML = cartHTML;
+        }
+        
+        // Update item quantity
+        function updateQuantity(itemId, newQuantity) {
+            newQuantity = parseInt(newQuantity);
+            
+            if (newQuantity <= 0) {
+                removeFromCart(itemId);
+                return;
+            }
+            
+            const itemIndex = carrito.findIndex(item => item.id === itemId);
+            if (itemIndex !== -1) {
+                carrito[itemIndex].cantidad = newQuantity;
+                localStorage.setItem('carrito', JSON.stringify(carrito));
+                loadCartItems();
+                updateCartSummary();
+                actualizarContadorCarrito();
+            }
+        }
+        
+        // Remove item from cart
+        function removeFromCart(itemId) {
+            carrito = carrito.filter(item => item.id !== itemId);
+            localStorage.setItem('carrito', JSON.stringify(carrito));
+            loadCartItems();
+            updateCartSummary();
+            actualizarContadorCarrito();
+            mostrarNotificacion('Producto eliminado del carrito', 'warning');
+        }
+        
+        // Update cart summary
+        function updateCartSummary() {
+            const subtotal = carrito.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
+            const shipping = subtotal > 100 ? 0 : 5.00;
+            const discount = 0; // Can be updated with coupon logic
+            const total = subtotal + shipping - discount;
+            
+            document.getElementById('cart-subtotal').textContent = `$${subtotal.toFixed(2)}`;
+            document.getElementById('cart-shipping').textContent = shipping === 0 ? 'Gratis' : `$${shipping.toFixed(2)}`;
+            document.getElementById('cart-discount').textContent = `-$${discount.toFixed(2)}`;
+            document.getElementById('cart-total').textContent = `$${total.toFixed(2)}`;
+        }
+        
+        // Apply coupon code
+        function applyCoupon() {
+            const couponCode = document.getElementById('coupon-input').value.trim();
+            
+            if (!couponCode) {
+                mostrarNotificacion('Por favor ingresa un código de descuento', 'warning');
+                return;
+            }
+            
+            // Simple coupon validation (you can expand this)
+            const validCoupons = {
+                'PERFUME10': 10,
+                'WELCOME20': 20,
+                'FIRST15': 15
+            };
+            
+            if (validCoupons[couponCode]) {
+                const discount = validCoupons[couponCode];
+                mostrarNotificacion(`¡Descuento del ${discount}% aplicado!`, 'success');
+                // Update discount calculation
+                updateCartSummary();
+            } else {
+                mostrarNotificacion('Código de descuento inválido', 'error');
+            }
+        }
+        
+        // Proceed to checkout
+        function proceedToCheckout() {
+            if (carrito.length === 0) {
+                mostrarNotificacion('Tu carrito está vacío', 'warning');
+                return;
+            }
+            
+            // Redirect to checkout page (to be created)
+            window.location.href = 'checkout.html';
+        }
+        
+        // Update cart counter
+        function actualizarContadorCarrito() {
+            const contador = document.getElementById('carrito-contador');
+            if (contador) {
+                const totalItems = carrito.reduce((sum, item) => sum + item.cantidad, 0);
+                contador.textContent = totalItems;
+            }
+        }
+        
+        // Show notification
+        function mostrarNotificacion(mensaje, tipo = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${tipo === 'error' ? 'danger' : tipo} position-fixed`;
+            notification.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+            notification.innerHTML = `
+                <i class="fas fa-${tipo === 'success' ? 'check-circle' : tipo === 'warning' ? 'exclamation-triangle' : 'times-circle'} me-2"></i>
+                ${mensaje}
+                <button type="button" class="btn-close float-end" onclick="this.parentElement.remove()"></button>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                if (notification.parentElement) {
+                    notification.remove();
+                }
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
