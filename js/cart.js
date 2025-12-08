@@ -31,7 +31,7 @@ class ShoppingCart {
 
     // Add item to cart
     addItem(productId, quantity = 1) {
-        return fetch('js/perfumes.json')
+        return fetch('/e-commerce-proyect/js/perfumes.json')
             .then(response => response.json())
             .then(data => {
                 const product = data.perfumes.find(p => p.id === productId);
@@ -382,7 +382,16 @@ class ShoppingCart {
             this.showNotification('Tu carrito está vacío', 'error');
             return;
         }
-        window.location.href = 'pages/checkout.html';
+        
+        // Determine the correct path based on current location
+        let checkoutPath = 'checkout.html';
+        if (window.location.pathname.includes('/pages/')) {
+            checkoutPath = 'checkout.html';
+        } else {
+            checkoutPath = 'pages/checkout.html';
+        }
+        
+        window.location.href = checkoutPath;
     }
 
     // Process payment
@@ -582,6 +591,11 @@ function quickAddToCart(productId, buttonElement) {
             buttonElement.disabled = false;
         }, 2000);
     });
+}
+
+// Global function for checkout button
+function proceedToCheckout() {
+    cart.proceedToCheckout();
 }
 
 console.log('🛒 Shopping cart functionality loaded successfully!');

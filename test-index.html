@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Index Products</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">🏠 Test Index Products</h1>
+        <div class="text-center mb-4">
+            <button class="btn btn-primary" onclick="manualLoad()">🔄 Cargar Productos Manualmente</button>
+        </div>
+        
+        <!-- Products Container -->
+        <div class="row g-4" id="productos-container">
+            <div class="col-12 text-center py-5" id="loading-productos">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Cargando...</span>
+                </div>
+                <h4 class="text-muted mt-3">Cargando perfumes...</h4>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        console.log('🧪 Test page loaded');
+        
+        async function manualLoad() {
+            const container = document.getElementById('productos-container');
+            const loadingElement = document.getElementById('loading-productos');
+            
+            try {
+                console.log('🚀 Manual load started...');
+                console.log('📍 Current location:', window.location.href);
+                
+                const response = await fetch('/e-commerce-proyect/js/perfumes.json');
+                console.log('📡 Response:', response.status, response.statusText);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                console.log('📦 Data received:', data.perfumes?.length, 'products');
+                
+                if (!data.perfumes || data.perfumes.length === 0) {
+                    throw new Error('No products found in JSON');
+                }
+                
+                // Hide loading
+                if (loadingElement) {
+                    loadingElement.style.display = 'none';
+                }
+                
+                // Take first 6 products for testing
+                const products = data.perfumes.slice(0, 6);
+                console.log('🎨 Rendering', products.length, 'products...');
+                
+                const html = products.map(product => {
+                    const imagePath = product.image.replace('../images/', '/e-commerce-proyect/images/');
+                    console.log('🖼️ Image path:', imagePath);
+                    
+                    return `
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div class="card h-100 shadow">
+                                <div style="height: 200px; overflow: hidden;">
+                                    <img src="${imagePath}" 
+                                         class="card-img-top w-100 h-100" 
+                                         alt="${product.name}"
+                                         style="object-fit: cover;"
+                                         onload="console.log('✅ Image loaded:', this.src)"
+                                         onerror="console.error('❌ Image failed:', this.src); this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZGRkIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtc2l6ZT0iMTIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM2NjYiPk5vIEltYWdlbjwvdGV4dD48L3N2Zz4='">
+                                </div>
+                                <div class="card-body">
+                                    <small class="text-muted text-uppercase">${product.brand}</small>
+                                    <h6 class="card-title">${product.name}</h6>
+                                    <p class="text-muted small">${product.description.substring(0, 60)}...</p>
+                                    <div class="d-flex justify-content-between">
+                                        <strong class="text-primary">$${product.price.toLocaleString()}</strong>
+                                        <small class="text-success">${product.ml}ml</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                
+                container.innerHTML = html;
+                console.log('✅ Products rendered successfully!');
+                
+            } catch (error) {
+                console.error('❌ Error:', error);
+                
+                if (loadingElement) {
+                    loadingElement.style.display = 'none';
+                }
+                
+                container.innerHTML = `
+                    <div class="col-12">
+                        <div class="alert alert-danger">
+                            <h4>❌ Error</h4>
+                            <p><strong>Message:</strong> ${error.message}</p>
+                            <p><strong>Current URL:</strong> ${window.location.href}</p>
+                            <button class="btn btn-warning" onclick="location.reload()">🔄 Retry</button>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+        
+        // Auto-load after a short delay
+        setTimeout(() => {
+            console.log('⏰ Auto-loading after delay...');
+            manualLoad();
+        }, 1000);
+    </script>
+</body>
+</html>

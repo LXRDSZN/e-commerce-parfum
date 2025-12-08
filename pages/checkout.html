@@ -3,128 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checkout - Perfumería Elegante</title>
+    <title>Checkout - Élite Perfumería</title>
     
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap 5.3 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="../css/styles.css">
-    <style>
-        .checkout-section {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: 100vh;
-            padding: 2rem 0;
-        }
-        .checkout-card {
-            border: none;
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-        }
-        .order-summary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 15px;
-        }
-        .payment-method {
-            border: 2px solid #e9ecef;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .payment-method:hover,
-        .payment-method.active {
-            border-color: #667eea;
-            background-color: #f8f9ff;
-        }
-        .form-control {
-            border-radius: 10px;
-            border: 2px solid #e9ecef;
-            padding: 0.75rem 1rem;
-        }
-        .form-control:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
-        }
-        .btn-checkout {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border: none;
-            border-radius: 25px;
-            padding: 0.75rem 2rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-    </style>
+    <link rel="stylesheet" href="../css/main.css">
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="../index.html">
-                <i class="fas fa-spray-can me-2"></i>Élite Perfumería
-            </a>
-            <div class="d-flex align-items-center">
-                <a href="../index.html" class="btn btn-outline-light btn-sm me-2">
-                    <i class="fas fa-arrow-left me-1"></i>Volver a la tienda
-                </a>
-            </div>
-        </div>
-    </nav>
-
-    <!-- Checkout Section -->
-    <section class="checkout-section">
-        <div class="container">
-            <div class="row justify-content-center">
-                <div class="col-12">
-                    <div class="text-center mb-5">
-                        <h1 class="display-5 fw-bold mb-3">Finalizar Compra</h1>
-                        <p class="lead text-muted">Complete sus datos para procesar su pedido</p>
+    <!-- Header -->
+    <header class="header-main">
+        <!-- Top Bar -->
+        <div class="top-bar bg-dark text-white py-2">
+            <div class="container">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-truck me-2"></i>
+                            <span class="small">Envío GRATIS en compras mayores a $500 MXN</span>
+                        </div>
                     </div>
                 </div>
             </div>
+        </div>
 
+        <!-- Main Header -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center" href="../index.html">
+                    <i class="fas fa-gem text-primary me-2 fs-3"></i>
+                    <span class="brand-text">Élite Perfumería</span>
+                </a>
+                <div class="navbar-nav ms-auto">
+                    <a href="#" class="position-relative">
+                        <i class="fas fa-shopping-bag fs-5 text-dark"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary cart-count">0</span>
+                    </a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="bg-light py-3">
+        <div class="container">
+            <ol class="breadcrumb mb-0">
+                <li class="breadcrumb-item"><a href="../index.html">Inicio</a></li>
+                <li class="breadcrumb-item"><a href="perfumes.html">Catálogo</a></li>
+                <li class="breadcrumb-item active">Checkout</li>
+            </ol>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <section class="py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h1 class="display-5 fw-bold mb-3">Finalizar Compra</h1>
+                <p class="lead text-muted">Complete sus datos para procesar su pedido</p>
+            </div>
+            
             <div class="row">
                 <!-- Checkout Form -->
-                <div class="col-lg-8 mb-4">
-                    <div class="card checkout-card">
+                <div class="col-lg-8">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-header bg-primary text-white">
+                            <h4 class="mb-0"><i class="fas fa-credit-card me-2"></i>Información de Pago</h4>
+                        </div>
                         <div class="card-body p-4">
                             <form id="checkoutForm">
-                                <!-- Shipping Information -->
-                                <div class="mb-5">
-                                    <h4 class="mb-4"><i class="fas fa-shipping-fast me-2 text-primary"></i>Información de Envío</h4>
+                                <!-- Contact Information -->
+                                <div class="mb-4">
+                                    <h5 class="text-primary mb-3">Información de Contacto</h5>
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
-                                            <label for="firstName" class="form-label fw-bold">Nombre *</label>
+                                            <label for="firstName" class="form-label">Nombre *</label>
                                             <input type="text" class="form-control" id="firstName" required>
                                         </div>
                                         <div class="col-md-6 mb-3">
-                                            <label for="lastName" class="form-label fw-bold">Apellido *</label>
+                                            <label for="lastName" class="form-label">Apellidos *</label>
                                             <input type="text" class="form-control" id="lastName" required>
                                         </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="email" class="form-label">Email *</label>
+                                            <input type="email" class="form-control" id="email" required>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="phone" class="form-label">Teléfono *</label>
+                                            <input type="tel" class="form-control" id="phone" required>
+                                        </div>
                                     </div>
-                                    <div class="mb-3">
-                                        <label for="email" class="form-label fw-bold">Email *</label>
-                                        <input type="email" class="form-control" id="email" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="phone" class="form-label fw-bold">Teléfono *</label>
-                                        <input type="tel" class="form-control" id="phone" required>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="address" class="form-label fw-bold">Dirección *</label>
-                                        <input type="text" class="form-control" id="address" placeholder="Calle, número, colonia" required>
-                                    </div>
+                                </div>
+
+                                <!-- Shipping Address -->
+                                <div class="mb-4">
+                                    <h5 class="text-primary mb-3">Dirección de Envío</h5>
                                     <div class="row">
-                                        <div class="col-md-4 mb-3">
-                                            <label for="city" class="form-label fw-bold">Ciudad *</label>
+                                        <div class="col-12 mb-3">
+                                            <label for="address" class="form-label">Dirección *</label>
+                                            <input type="text" class="form-control" id="address" required>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="city" class="form-label">Ciudad *</label>
                                             <input type="text" class="form-control" id="city" required>
                                         </div>
-                                        <div class="col-md-4 mb-3">
-                                            <label for="state" class="form-label fw-bold">Estado *</label>
-                                            <select class="form-control" id="state" required>
-                                                <option value="">Seleccione un estado</option>
+                                        <div class="col-md-3 mb-3">
+                                            <label for="state" class="form-label">Estado *</label>
+                                            <select class="form-select" id="state" required>
+                                                <option value="">Seleccionar...</option>
                                                 <option value="CDMX">Ciudad de México</option>
                                                 <option value="Estado de México">Estado de México</option>
                                                 <option value="Jalisco">Jalisco</option>
@@ -132,69 +122,72 @@
                                                 <option value="Puebla">Puebla</option>
                                             </select>
                                         </div>
-                                        <div class="col-md-4 mb-3">
-                                            <label for="zipCode" class="form-label fw-bold">Código Postal *</label>
+                                        <div class="col-md-3 mb-3">
+                                            <label for="zipCode" class="form-label">Código Postal *</label>
                                             <input type="text" class="form-control" id="zipCode" required>
                                         </div>
                                     </div>
                                 </div>
 
                                 <!-- Payment Method -->
-                                <div class="mb-5">
-                                    <h4 class="mb-4"><i class="fas fa-credit-card me-2 text-primary"></i>Método de Pago</h4>
+                                <div class="mb-4">
+                                    <h5 class="text-primary mb-3">Método de Pago</h5>
                                     <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <div class="payment-method p-3" data-method="card">
-                                                <div class="d-flex align-items-center">
-                                                    <input type="radio" name="paymentMethod" value="card" id="cardPayment" class="me-3">
-                                                    <label for="cardPayment" class="flex-grow-1 mb-0">
-                                                        <i class="fas fa-credit-card me-2"></i>
-                                                        <strong>Tarjeta de Crédito/Débito</strong>
-                                                    </label>
-                                                </div>
+                                        <div class="col-md-6">
+                                            <div class="form-check payment-method mb-3 p-3 border rounded">
+                                                <input class="form-check-input" type="radio" name="paymentMethod" id="cardPayment" value="card" checked>
+                                                <label class="form-check-label" for="cardPayment">
+                                                    <i class="fas fa-credit-card me-2 text-primary"></i>Tarjeta de Crédito/Débito
+                                                </label>
                                             </div>
                                         </div>
-                                        <div class="col-md-6 mb-3">
-                                            <div class="payment-method p-3" data-method="paypal">
-                                                <div class="d-flex align-items-center">
-                                                    <input type="radio" name="paymentMethod" value="paypal" id="paypalPayment" class="me-3">
-                                                    <label for="paypalPayment" class="flex-grow-1 mb-0">
-                                                        <i class="fab fa-paypal me-2"></i>
-                                                        <strong>PayPal</strong>
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Credit Card Details -->
-                                    <div id="cardDetails" class="mt-4" style="display: none;">
-                                        <div class="row">
-                                            <div class="col-12 mb-3">
-                                                <label for="cardNumber" class="form-label fw-bold">Número de Tarjeta *</label>
-                                                <input type="text" class="form-control" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19">
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-8 mb-3">
-                                                <label for="cardName" class="form-label fw-bold">Nombre en la Tarjeta *</label>
-                                                <input type="text" class="form-control" id="cardName" placeholder="Como aparece en la tarjeta">
-                                            </div>
-                                            <div class="col-md-2 mb-3">
-                                                <label for="cardExpiry" class="form-label fw-bold">Vencimiento *</label>
-                                                <input type="text" class="form-control" id="cardExpiry" placeholder="MM/AA" maxlength="5">
-                                            </div>
-                                            <div class="col-md-2 mb-3">
-                                                <label for="cardCvv" class="form-label fw-bold">CVV *</label>
-                                                <input type="text" class="form-control" id="cardCvv" placeholder="123" maxlength="3">
+                                        <div class="col-md-6">
+                                            <div class="form-check payment-method mb-3 p-3 border rounded">
+                                                <input class="form-check-input" type="radio" name="paymentMethod" id="cashPayment" value="cash">
+                                                <label class="form-check-label" for="cashPayment">
+                                                    <i class="fas fa-money-bill-wave me-2 text-success"></i>Pago en Efectivo (Ficticio)
+                                                </label>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="text-center">
-                                    <button type="submit" class="btn btn-checkout btn-primary btn-lg">
-                                        <i class="fas fa-lock me-2"></i>Procesar Pago Seguro
+                                <!-- Card Details -->
+                                <div id="cardDetails" class="mb-4">
+                                    <h6 class="text-secondary mb-3">Detalles de la Tarjeta</h6>
+                                    <div class="row">
+                                        <div class="col-12 mb-3">
+                                            <label for="cardNumber" class="form-label">Número de Tarjeta *</label>
+                                            <input type="text" class="form-control" id="cardNumber" placeholder="1234 5678 9012 3456" maxlength="19">
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label for="cardExpiry" class="form-label">Vencimiento *</label>
+                                            <input type="text" class="form-control" id="cardExpiry" placeholder="MM/AA" maxlength="5">
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label for="cardCVV" class="form-label">CVV *</label>
+                                            <input type="text" class="form-control" id="cardCVV" placeholder="123" maxlength="4">
+                                        </div>
+                                        <div class="col-md-4 mb-3">
+                                            <label for="cardName" class="form-label">Nombre en Tarjeta *</label>
+                                            <input type="text" class="form-control" id="cardName" placeholder="JUAN PEREZ">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Cash Payment Info -->
+                                <div id="cashDetails" class="mb-4 d-none">
+                                    <div class="alert alert-info">
+                                        <i class="fas fa-info-circle me-2"></i>
+                                        <strong>Pago en Efectivo (Simulado):</strong> 
+                                        Esta es una demostración. En un sistema real, se generarían instrucciones para pago en tiendas de conveniencia o bancos.
+                                    </div>
+                                </div>
+
+                                <!-- Submit Button -->
+                                <div class="text-end">
+                                    <button type="submit" class="btn btn-primary btn-lg px-5" id="submitPayment">
+                                        <i class="fas fa-lock me-2"></i>Procesar Pago
                                     </button>
                                 </div>
                             </form>
@@ -204,39 +197,15 @@
 
                 <!-- Order Summary -->
                 <div class="col-lg-4">
-                    <div class="card checkout-card">
-                        <div class="card-header order-summary text-center py-4">
-                            <h4 class="mb-0"><i class="fas fa-shopping-bag me-2"></i>Resumen del Pedido</h4>
+                    <div class="card border-0 shadow-sm sticky-top" style="top: 20px;">
+                        <div class="card-header bg-light">
+                            <h5 class="mb-0"><i class="fas fa-shopping-cart me-2"></i>Tu Pedido</h5>
                         </div>
-                        <div class="card-body p-4">
-                            <div id="orderSummary">
-                                <!-- Cart items will be loaded here -->
-                            </div>
-                            
-                            <hr class="my-4">
-                            
-                            <div class="d-flex justify-content-between mb-2">
-                                <span>Subtotal:</span>
-                                <span id="subtotal">$0.00 MXN</span>
-                            </div>
-                            <div class="d-flex justify-content-between mb-2">
-                                <span>Envío:</span>
-                                <span id="shipping">$150.00 MXN</span>
-                            </div>
-                            <div class="d-flex justify-content-between mb-2">
-                                <span>IVA (16%):</span>
-                                <span id="tax">$0.00 MXN</span>
-                            </div>
-                            <hr>
-                            <div class="d-flex justify-content-between fw-bold h5">
-                                <span>Total:</span>
-                                <span id="total" class="text-primary">$0.00 MXN</span>
-                            </div>
-                            
-                            <div class="mt-4 p-3 bg-light rounded">
-                                <div class="d-flex align-items-center">
-                                    <i class="fas fa-shield-alt text-success me-2"></i>
-                                    <small class="text-muted">Pago 100% seguro y protegido</small>
+                        <div class="card-body" id="order-summary">
+                            <!-- Order summary will be populated by JavaScript -->
+                            <div class="text-center py-4">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Cargando...</span>
                                 </div>
                             </div>
                         </div>
@@ -246,216 +215,69 @@
         </div>
     </section>
 
-    <!-- Loading Modal -->
-    <div class="modal fade" id="loadingModal" tabindex="-1" data-bs-backdrop="static">
+    <!-- Payment Processing Modal -->
+    <div class="modal fade" id="paymentModal" tabindex="-1" data-bs-backdrop="static">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content text-center p-4">
-                <div class="modal-body">
-                    <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;"></div>
-                    <h5>Procesando su pago...</h5>
-                    <p class="text-muted mb-0">Por favor espere mientras procesamos su transacción</p>
+            <div class="modal-content">
+                <div class="modal-body text-center py-5">
+                    <div id="paymentProcessing">
+                        <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;"></div>
+                        <h4>Procesando Pago...</h4>
+                        <p class="text-muted">Por favor, no cierres esta ventana</p>
+                    </div>
+                    <div id="paymentSuccess" class="d-none">
+                        <i class="fas fa-check-circle text-success mb-3" style="font-size: 3rem;"></i>
+                        <h4 class="text-success">¡Pago Exitoso!</h4>
+                        <p class="text-muted">Tu pedido ha sido procesado correctamente</p>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-success" onclick="downloadReceipt()">
+                                <i class="fas fa-download me-2"></i>Descargar Recibo
+                            </button>
+                            <button class="btn btn-primary" onclick="window.location.href='../index.html'">
+                                <i class="fas fa-home me-2"></i>Ir al Inicio
+                            </button>
+                        </div>
+                    </div>
+                    <div id="paymentError" class="d-none">
+                        <i class="fas fa-times-circle text-danger mb-3" style="font-size: 3rem;"></i>
+                        <h4 class="text-danger">Error en el Pago</h4>
+                        <p class="text-muted" id="errorMessage">Ha ocurrido un error procesando tu pago</p>
+                        <button class="btn btn-danger" onclick="closePaymentModal()">
+                            <i class="fas fa-times me-2"></i>Cerrar e Intentar Nuevamente
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../js/main.js"></script>
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/cart.js"></script>
+    <script src="../js/checkout.js"></script>
+
     <script>
-        let cart = JSON.parse(localStorage.getItem('cart')) || [];
-        let orderTotal = 0;
-
-        document.addEventListener('DOMContentLoaded', function() {
-            checkCart();
-            loadOrderSummary();
-            initializePaymentMethods();
-            initializeForm();
-        });
-
-        function checkCart() {
-            if (cart.length === 0) {
-                alert('Tu carrito está vacío. Serás redirigido a la tienda.');
-                window.location.href = '../index.html';
-                return;
+        // Global variables
+        let currentOrder = null;
+        
+        // Download receipt function
+        function downloadReceipt() {
+            if (currentOrder) {
+                cart.downloadReceipt(currentOrder);
             }
         }
-
-        function loadOrderSummary() {
-            const orderSummary = document.getElementById('orderSummary');
-            const subtotalEl = document.getElementById('subtotal');
-            const taxEl = document.getElementById('tax');
-            const totalEl = document.getElementById('total');
+        
+        // Close payment modal
+        function closePaymentModal() {
+            const modal = bootstrap.Modal.getInstance(document.getElementById('paymentModal'));
+            if (modal) {
+                modal.hide();
+            }
             
-            let subtotal = 0;
-            let html = '';
-
-            cart.forEach(item => {
-                const itemTotal = item.price * item.quantity;
-                subtotal += itemTotal;
-                
-                html += `
-                    <div class="d-flex align-items-center mb-3">
-                        <img src="../${item.image}" alt="${item.name}" class="me-3" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px;">
-                        <div class="flex-grow-1">
-                            <h6 class="mb-1 fw-bold">${item.name}</h6>
-                            <small class="text-muted">${item.brand}</small>
-                            <div class="d-flex justify-content-between">
-                                <span class="text-muted">Cantidad: ${item.quantity}</span>
-                                <strong>$${itemTotal.toLocaleString('es-MX', { minimumFractionDigits: 2 })} MXN</strong>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-
-            orderSummary.innerHTML = html;
-            
-            const shipping = 150;
-            const tax = subtotal * 0.16;
-            orderTotal = subtotal + shipping + tax;
-
-            subtotalEl.textContent = `$${subtotal.toLocaleString('es-MX', { minimumFractionDigits: 2 })} MXN`;
-            taxEl.textContent = `$${tax.toLocaleString('es-MX', { minimumFractionDigits: 2 })} MXN`;
-            totalEl.textContent = `$${orderTotal.toLocaleString('es-MX', { minimumFractionDigits: 2 })} MXN`;
-        }
-
-        function initializePaymentMethods() {
-            const paymentMethods = document.querySelectorAll('.payment-method');
-            const cardDetails = document.getElementById('cardDetails');
-
-            paymentMethods.forEach(method => {
-                method.addEventListener('click', function() {
-                    // Remove active class from all methods
-                    paymentMethods.forEach(m => m.classList.remove('active'));
-                    // Add active class to clicked method
-                    this.classList.add('active');
-                    
-                    // Check the radio button
-                    const radio = this.querySelector('input[type="radio"]');
-                    radio.checked = true;
-
-                    // Show/hide card details
-                    if (radio.value === 'card') {
-                        cardDetails.style.display = 'block';
-                    } else {
-                        cardDetails.style.display = 'none';
-                    }
-                });
-            });
-        }
-
-        function initializeForm() {
-            const form = document.getElementById('checkoutForm');
-            
-            // Format card number
-            const cardNumber = document.getElementById('cardNumber');
-            if (cardNumber) {
-                cardNumber.addEventListener('input', function() {
-                    let value = this.value.replace(/\s/g, '').replace(/[^0-9]/gi, '');
-                    let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
-                    this.value = formattedValue;
-                });
-            }
-
-            // Format expiry date
-            const cardExpiry = document.getElementById('cardExpiry');
-            if (cardExpiry) {
-                cardExpiry.addEventListener('input', function() {
-                    let value = this.value.replace(/\D/g, '');
-                    if (value.length >= 2) {
-                        value = value.substring(0, 2) + '/' + value.substring(2, 4);
-                    }
-                    this.value = value;
-                });
-            }
-
-            // Form submission
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
-                processOrder();
-            });
-        }
-
-        function processOrder() {
-            const form = document.getElementById('checkoutForm');
-            const formData = new FormData(form);
-            
-            // Validate form
-            if (!form.checkValidity()) {
-                form.classList.add('was-validated');
-                return;
-            }
-
-            // Check payment method
-            const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked');
-            if (!paymentMethod) {
-                alert('Por favor seleccione un método de pago');
-                return;
-            }
-
-            // Validate card details if card payment is selected
-            if (paymentMethod.value === 'card') {
-                const cardNumber = document.getElementById('cardNumber').value;
-                const cardName = document.getElementById('cardName').value;
-                const cardExpiry = document.getElementById('cardExpiry').value;
-                const cardCvv = document.getElementById('cardCvv').value;
-
-                if (!cardNumber || !cardName || !cardExpiry || !cardCvv) {
-                    alert('Por favor complete todos los datos de la tarjeta');
-                    return;
-                }
-            }
-
-            // Show loading modal
-            const loadingModal = new bootstrap.Modal(document.getElementById('loadingModal'));
-            loadingModal.show();
-
-            // Simulate payment processing
-            setTimeout(() => {
-                loadingModal.hide();
-                
-                // Create order object
-                const order = {
-                    id: generateOrderId(),
-                    date: new Date().toISOString(),
-                    items: cart,
-                    customer: {
-                        firstName: document.getElementById('firstName').value,
-                        lastName: document.getElementById('lastName').value,
-                        email: document.getElementById('email').value,
-                        phone: document.getElementById('phone').value,
-                        address: {
-                            street: document.getElementById('address').value,
-                            city: document.getElementById('city').value,
-                            state: document.getElementById('state').value,
-                            zipCode: document.getElementById('zipCode').value
-                        }
-                    },
-                    paymentMethod: paymentMethod.value,
-                    total: orderTotal,
-                    status: 'confirmed'
-                };
-
-                // Save order
-                saveOrder(order);
-                
-                // Clear cart
-                localStorage.removeItem('cart');
-                
-                // Redirect to success page
-                window.location.href = `order-success.html?orderId=${order.id}`;
-                
-            }, 3000);
-        }
-
-        function generateOrderId() {
-            return 'PF' + Date.now().toString().slice(-8);
-        }
-
-        function saveOrder(order) {
-            let orders = JSON.parse(localStorage.getItem('orders')) || [];
-            orders.push(order);
-            localStorage.setItem('orders', JSON.stringify(orders));
+            // Reset modal content
+            document.getElementById('paymentProcessing').classList.remove('d-none');
+            document.getElementById('paymentSuccess').classList.add('d-none');
+            document.getElementById('paymentError').classList.add('d-none');
         }
     </script>
 </body>

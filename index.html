@@ -272,6 +272,8 @@
     <script src="js/cart.js"></script>
     <script src="js/products.js"></script>
     <script src="js/main.js"></script>
+    <script src="js/image-utils.js"></script>
+    <script src="js/index-simple.js"></script>
     
     <script>
         AOS.init({duration: 800});
@@ -296,6 +298,24 @@
                 });
             }
         });
+        
+        // Setup search functionality
+        const searchInput = document.getElementById('barra-busqueda');
+        if (searchInput) {
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    const query = this.value.trim();
+                    if (query) {
+                        window.location.href = `pages/perfumes.html?search=${encodeURIComponent(query)}`;
+                    } else {
+                        window.location.href = 'pages/perfumes.html';
+                    }
+                }
+            });
+            
+            // Add placeholder text
+            searchInput.placeholder = 'Buscar perfumes, marcas... (Presiona Enter)';
+        }
     </script>
 </body>
 </html>

@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Simple - Perfumes</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Test Simple de Perfumes</h1>
+        <div class="row" id="productsGrid">
+            <div class="col-12 text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Cargando...</span>
+                </div>
+                <h4 class="text-muted mt-3">Cargando perfumes...</h4>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Test simple para cargar perfumes
+        async function testLoadPerfumes() {
+            try {
+                console.log('Starting test load...');
+                const response = await fetch('/e-commerce-proyect/js/perfumes.json');
+                console.log('Response status:', response.status);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('Data loaded:', data.perfumes.length, 'perfumes');
+                
+                const grid = document.getElementById('productsGrid');
+                if (!grid) {
+                    console.error('Grid not found!');
+                    return;
+                }
+                
+                // Render simple products
+                const html = data.perfumes.slice(0, 6).map(product => `
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100">
+                            <img src="${product.image}" class="card-img-top" alt="${product.name}" style="height: 300px; object-fit: cover;" 
+                                 onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjhmOWZhIi8+PHRleHQgeD0iNTAlIiB5PSI1MCUiIGZvbnQtc2l6ZT0iMTQiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGZpbGw9IiM2Yzc1N2QiPkltYWdlbiBObyBEaXNwb25pYmxlPC90ZXh0Pjwvc3ZnPg=='">
+                            <div class="card-body">
+                                <h5 class="card-title">${product.name}</h5>
+                                <p class="card-text text-muted">${product.brand}</p>
+                                <p class="card-text">${product.description}</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <strong class="text-primary">$${product.price.toLocaleString()} MXN</strong>
+                                    <small class="text-muted">${product.ml}ml</small>
+                                </div>
+                                <div class="mt-2">
+                                    <small class="text-success">Stock: ${product.stock}</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+                
+                grid.innerHTML = html;
+                console.log('Products rendered successfully');
+                
+            } catch (error) {
+                console.error('Error:', error);
+                const grid = document.getElementById('productsGrid');
+                if (grid) {
+                    grid.innerHTML = `
+                        <div class="col-12 text-center py-5">
+                            <div class="alert alert-danger">
+                                <h4>Error al cargar perfumes</h4>
+                                <p>Error: ${error.message}</p>
+                                <button class="btn btn-primary" onclick="testLoadPerfumes()">Reintentar</button>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+        }
+        
+        // Load when page is ready
+        document.addEventListener('DOMContentLoaded', testLoadPerfumes);
+    </script>
+</body>
+</html>

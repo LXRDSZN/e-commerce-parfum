@@ -2,603 +2,498 @@
   "perfumes": [
     {
       "id": 1,
-      "name": "Bleu de Chanel",
+      "name": "Bleu de Chanel EDP",
       "brand": "Chanel",
       "category": "Hombre",
       "price": 4200.00,
-      "ml": 100,
+      "ml": 50,
+      "stock": 15,
       "description": "Una fragancia aromática amaderada con notas de limón, menta, cedro rosa y sándalo.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.7508.jpg"
+      "image": "../images/perfumes/Chanel/Chanel Bleu De Chanel for Men EDP Spray 1.7 oz.jpg"
     },
     {
       "id": 2,
-      "name": "Chanel No.5",
-      "brand": "Chanel",
-      "category": "Mujer",
-      "price": 4500.00,
-      "ml": 100,
-      "description": "El perfume más icónico del mundo. Una fragancia floral aldehídica atemporal.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.464.jpg"
-    },
-    {
-      "id": 3,
-      "name": "Coco Mademoiselle",
-      "brand": "Chanel",
-      "category": "Mujer",
-      "price": 3850.00,
-      "ml": 100,
-      "description": "Una fragancia oriental fresca con notas de naranja, rosa, jazmín y pachulí.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.465.jpg"
-    },
-    {
-      "id": 4,
-      "name": "Chance",
+      "name": "Chance Eau Fraiche",
       "brand": "Chanel",
       "category": "Mujer",
       "price": 3650.00,
       "ml": 100,
+      "stock": 12,
       "description": "Una fragancia floral frutal delicada con notas de pomelo, membrillo y jacinto.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.2431.jpg"
+      "image": "../images/perfumes/Chanel/Chanel Chance Eau Fraiche Eau De Parfum Spray, 100 ml.jpg"
     },
     {
-      "id": 5,
-      "name": "Allure Homme Sport",
-      "brand": "Chanel",
-      "category": "Hombre",
-      "price": 3450.00,
-      "ml": 100,
-      "description": "Una fragancia fresca y enérgica con notas de mandarina, pimienta negra y cedro.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.1301.jpg"
-    },
-    {
-      "id": 6,
-      "name": "Gabrielle",
-      "brand": "Chanel",
-      "category": "Mujer",
-      "price": 4100.00,
-      "ml": 100,
-      "description": "Una fragancia floral radiante con notas de jazmín, ylang-ylang y flor de naranjo.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.42351.jpg"
-    },
-    {
-      "id": 7,
-      "name": "Sauvage",
-      "brand": "Dior",
-      "category": "Hombre",
-      "price": 3950.00,
-      "ml": 100,
-      "description": "Una fragancia aromática fresca con notas de bergamota, pimienta de Sichuan y ambroxan.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.37049.jpg"
-    },
-    {
-      "id": 8,
-      "name": "Fahrenheit",
-      "brand": "Dior",
-      "category": "Hombre",
-      "price": 3550.00,
-      "ml": 100,
-      "description": "Una fragancia aromática especiada con notas de lavanda, cedro, cuero y vainilla.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.623.jpg"
-    },
-    {
-      "id": 9,
-      "name": "Dior Homme Intense",
-      "brand": "Dior",
-      "category": "Hombre",
-      "price": 4000.00,
-      "ml": 100,
-      "description": "Una fragancia oriental amaderada con notas de iris, lavanda y cedro.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.3023.jpg"
-    },
-    {
-      "id": 10,
-      "name": "Miss Dior",
-      "brand": "Dior",
-      "category": "Mujer",
-      "price": 3450.00,
-      "ml": 100,
-      "description": "Una fragancia floral chypre con notas de rosa de Grasse, peonía y pachulí.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.45547.jpg"
-    },
-    {
-      "id": 11,
-      "name": "J'adore",
+      "id": 3,
+      "name": "J'adore Infinissime",
       "brand": "Dior",
       "category": "Mujer",
       "price": 4300.00,
       "ml": 100,
+      "stock": 10,
       "description": "Una fragancia floral luminosa con notas de ylang-ylang, rosa y jazmín.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.97.jpg"
+      "image": "../images/perfumes/Dior/Christian Dior Jadore Infinissime Women 3.4 oz EDP Spray.jpg"
     },
     {
-      "id": 12,
+      "id": 4,
+      "name": "Dior Homme",
+      "brand": "Dior",
+      "category": "Hombre",
+      "price": 4000.00,
+      "ml": 100,
+      "stock": 8,
+      "description": "Una fragancia oriental amaderada con notas de iris, lavanda y cedro.",
+      "image": "../images/perfumes/Dior/Dior Homme By Christian Dior For Men. Spray 3.4 Ounces.jpg"
+    },
+    {
+      "id": 5,
+      "name": "Dune",
+      "brand": "Dior",
+      "category": "Mujer",
+      "price": 3200.00,
+      "ml": 100,
+      "stock": 14,
+      "description": "Una fragancia aromática marina con notas de aldehídos, bergamota y lirio.",
+      "image": "../images/perfumes/Dior/Dune By Christian Dior For Women. Eau De Toilette Spray 3.4 Ounces.jpg"
+    },
+    {
+      "id": 6,
       "name": "Hypnotic Poison",
       "brand": "Dior",
       "category": "Mujer",
       "price": 3700.00,
       "ml": 100,
+      "stock": 16,
       "description": "Una fragancia oriental gourmand con notas de almendra, jazmín y vainilla.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.100.jpg"
+      "image": "../images/perfumes/Dior/Hypnotic Poison by Christian Dior Eau De Toilette Spray for Women, 3.4 Ounce.jpg"
     },
     {
-      "id": 13,
+      "id": 7,
       "name": "Aventus",
       "brand": "Creed",
       "category": "Hombre",
       "price": 7650.00,
       "ml": 100,
+      "stock": 5,
       "description": "Una fragancia frutal amaderada con notas de piña, bergamota, abedul y pachulí.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.7751.jpg"
+      "image": "../images/perfumes/Creed/Aventus by Creed Eau De Parfum Spray 3.3 oz  100 ml.jpg"
     },
     {
-      "id": 14,
-      "name": "Green Irish Tweed",
-      "brand": "Creed",
-      "category": "Hombre",
-      "price": 7200.00,
-      "ml": 100,
-      "description": "Una fragancia aromática verde con notas de limón, menta, violeta y sándalo.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.493.jpg"
-    },
-    {
-      "id": 15,
-      "name": "Silver Mountain Water",
-      "brand": "Creed",
-      "category": "Unisex",
-      "price": 6950.00,
-      "ml": 100,
-      "description": "Una fragancia aromática acuática con notas de bergamota, grosella negra y té verde.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.494.jpg"
-    },
-    {
-      "id": 16,
-      "name": "Viking",
+      "id": 8,
+      "name": "Viking Cologne",
       "brand": "Creed",
       "category": "Hombre",
       "price": 7450.00,
       "ml": 100,
+      "stock": 6,
       "description": "Una fragancia aromática especiada con notas de menta, rosa búlgara y sándalo.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.42659.jpg"
+      "image": "../images/perfumes/Creed/Creed Agua de Perfume Spray Viking Cologne para Hombre, Natural, 3.3 Oz 100 ml.jpg"
     },
     {
-      "id": 17,
-      "name": "Millésime Impérial",
+      "id": 9,
+      "name": "Aventus Cologne",
       "brand": "Creed",
-      "category": "Unisex",
+      "category": "Hombre",
       "price": 6800.00,
       "ml": 100,
-      "description": "Una fragancia marina salada con notas de bergamota, melón y lirio marino.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.495.jpg"
+      "stock": 7,
+      "description": "Una versión más fresca del icónico Aventus con notas cítricas y amaderadas.",
+      "image": "../images/perfumes/Creed/Creed Aventus Cologne Men Eau De Parfum Spray, 3.4 Ounce (New 2019), 3.44 ounces.jpg"
     },
     {
-      "id": 18,
-      "name": "Virgin Island Water",
+      "id": 10,
+      "name": "Silver Mountain Water",
       "brand": "Creed",
       "category": "Unisex",
-      "price": 6600.00,
-      "ml": 100,
-      "description": "Una fragancia tropical fresca con notas de coco, lima y ron blanco.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.498.jpg"
+      "price": 6950.00,
+      "ml": 50,
+      "stock": 9,
+      "description": "Una fragancia aromática acuática con notas de bergamota, grosella negra y té verde.",
+      "image": "../images/perfumes/Creed/Creed Silver mountain water eau de parfum spray 1.7 oz, 50 ml.jpg"
     },
     {
-      "id": 19,
+      "id": 11,
       "name": "Eros",
       "brand": "Versace",
       "category": "Hombre",
       "price": 2380.00,
       "ml": 100,
+      "stock": 20,
       "description": "Una fragancia aromática fresca con notas de menta, manzana verde, tonka y vainilla.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.18928.jpg"
+      "image": "../images/perfumes/Versace/Versace Eros Perfume para Hombre - 1 x 100 ml.jpg"
     },
     {
-      "id": 20,
-      "name": "Dylan Blue",
+      "id": 12,
+      "name": "Eros Flame",
       "brand": "Versace",
       "category": "Hombre",
+      "price": 2450.00,
+      "ml": 100,
+      "stock": 18,
+      "description": "Una fragancia oriental especiada con notas de mandarina, pimienta negra y vainilla.",
+      "image": "../images/perfumes/Versace/Versace - Agua de perfume espray Eros Flame para hombre, 3.4 onzas, rojo.jpg"
+    },
+    {
+      "id": 13,
+      "name": "Eros Pour Femme",
+      "brand": "Versace",
+      "category": "Mujer",
       "price": 2200.00,
       "ml": 100,
-      "description": "Una fragancia aromática acuática con notas de bergamota, pomelo y pachulí.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.38018.jpg"
+      "stock": 15,
+      "description": "Una fragancia floral frutal con notas de limón siciliano, granada y pachulí blanco.",
+      "image": "../images/perfumes/Versace/VERSACE Eros Perfum para Mujer, Multicolor, 100ml (3.4 oz).jpg"
     },
     {
-      "id": 21,
-      "name": "Pour Homme",
-      "brand": "Versace",
-      "category": "Hombre",
-      "price": 1875.00,
-      "ml": 100,
-      "description": "Una fragancia aromática mediterránea con notas de limón, bergamota y cedro.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.556.jpg"
-    },
-    {
-      "id": 22,
-      "name": "Man Eau Fraîche",
-      "brand": "Versace",
-      "category": "Hombre",
-      "price": 1800.00,
-      "ml": 100,
-      "description": "Una fragancia acuática fresca con notas de limón, romero y cedro.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.3702.jpg"
-    },
-    {
-      "id": 23,
-      "name": "Bright Crystal",
-      "brand": "Versace",
-      "category": "Mujer",
-      "price": 2050.00,
-      "ml": 90,
-      "description": "Una fragancia floral frutal con notas de granada, peonía, magnolia y ámbar.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.2427.jpg"
-    },
-    {
-      "id": 24,
-      "name": "Crystal Noir",
-      "brand": "Versace",
-      "category": "Mujer",
-      "price": 2225.00,
-      "ml": 90,
-      "description": "Una fragancia oriental floral con notas de jengibre, peonía y gardenia.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.557.jpg"
-    },
-    {
-      "id": 25,
-      "name": "Uomo",
+      "id": 14,
+      "name": "Donna Born in Roma Intense",
       "brand": "Valentino",
-      "category": "Hombre",
-      "price": 2750.00,
+      "category": "Mujer",
+      "price": 3200.00,
       "ml": 100,
-      "description": "Una fragancia aromática especiada con notas de bergamota, mirto y cedro.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.19464.jpg"
+      "stock": 12,
+      "description": "Una fragancia floral oriental intensa con notas de grosella negra, jazmín y vainilla.",
+      "image": "../images/perfumes/Valentino/Valentino Donna Born In Roma Intense Eau De Parfum Spray 100 ml for Women.jpg"
     },
     {
-      "id": 26,
+      "id": 15,
       "name": "Uomo Born in Roma",
       "brand": "Valentino",
       "category": "Hombre",
       "price": 3125.00,
       "ml": 100,
+      "stock": 14,
       "description": "Una fragancia aromática especiada con notas de jengibre, salvia y vetiver.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.54448.jpg"
+      "image": "../images/perfumes/Valentino/Valentino Uomo Born In Roma Eau De Toilette for Men  3.4 oz  100 ml - Spray.jpg"
     },
     {
-      "id": 27,
-      "name": "Donna",
+      "id": 16,
+      "name": "Donna Born in Roma Coral Fantasy",
       "brand": "Valentino",
       "category": "Mujer",
-      "price": 2550.00,
-      "ml": 100,
-      "description": "Una fragancia floral chypre con notas de bergamota, rosa búlgara e iris.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.30149.jpg"
+      "price": 2800.00,
+      "ml": 50,
+      "stock": 10,
+      "description": "Una fragancia floral fresca con notas de bergamota, jazmín y almizcle blanco.",
+      "image": "../images/perfumes/Valentino/Valentino Valentino Donna Born In Roma Coral Fantasy For Women 1.7 oz EDP Spray.jpg"
     },
     {
-      "id": 28,
-      "name": "Donna Born in Roma",
-      "brand": "Valentino",
-      "category": "Mujer",
-      "price": 2950.00,
-      "ml": 100,
-      "description": "Una fragancia floral moderna con notas de grosella negra, jazmín y vainilla.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.54449.jpg"
-    },
-    {
-      "id": 29,
-      "name": "Valentina",
-      "brand": "Valentino",
-      "category": "Mujer",
-      "price": 2700.00,
-      "ml": 80,
-      "description": "Una fragancia floral oriental con notas de bergamota, trufa blanca y vainilla.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.12970.jpg"
-    },
-    {
-      "id": 30,
-      "name": "Noir Absolu",
-      "brand": "Valentino",
-      "category": "Hombre",
-      "price": 2875.00,
-      "ml": 100,
-      "description": "Una fragancia oriental especiada intensa con notas de bergamota, iris y cuero.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.42887.jpg"
-    },
-    {
-      "id": 31,
-      "name": "Wanted",
+      "id": 17,
+      "name": "Chrome Eau de Parfum",
       "brand": "Azzaro",
       "category": "Hombre",
-      "price": 1950.00,
+      "price": 1850.00,
       "ml": 100,
-      "description": "Una fragancia aromática especiada con notas de limón, cardamomo y vetiver.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.34364.jpg"
-    },
-    {
-      "id": 32,
-      "name": "Wanted by Night",
-      "brand": "Azzaro",
-      "category": "Hombre",
-      "price": 2050.00,
-      "ml": 100,
-      "description": "Una fragancia oriental amaderada con notas de bergamota, canela y cuero.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.44970.jpg"
-    },
-    {
-      "id": 33,
-      "name": "The Most Wanted",
-      "brand": "Azzaro",
-      "category": "Hombre",
-      "price": 2125.00,
-      "ml": 100,
-      "description": "Una fragancia oriental especiada con notas de bergamota, cardamomo y vainilla.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.56244.jpg"
-    },
-    {
-      "id": 34,
-      "name": "Chrome",
-      "brand": "Azzaro",
-      "category": "Hombre",
-      "price": 1625.00,
-      "ml": 100,
+      "stock": 25,
       "description": "Una fragancia cítrica acuática con notas de limón, jengibre y madera blanca.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.301.jpg"
+      "image": "../images/perfumes/Azzaro/Azzaro Eau de Parfum Chrome 100 ml.jpg"
     },
     {
-      "id": 35,
-      "name": "Chrome Extreme",
-      "brand": "Azzaro",
-      "category": "Hombre",
-      "price": 1800.00,
-      "ml": 100,
-      "description": "Una fragancia aromática intensa con notas de grosella negra, cedro y almizcle.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.47736.jpg"
-    },
-    {
-      "id": 36,
+      "id": 18,
       "name": "Azzaro Pour Homme",
       "brand": "Azzaro",
       "category": "Hombre",
       "price": 1450.00,
       "ml": 100,
+      "stock": 30,
       "description": "Una fragancia aromática fougère con notas de lavanda, anís y sándalo.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.300.jpg"
+      "image": "../images/perfumes/Azzaro/Azzaro For Men. Eau De Toilette Spray 3.4 Ounces.jpg"
     },
     {
-      "id": 37,
-      "name": "Le Male",
-      "brand": "Jean Paul Gaultier",
+      "id": 19,
+      "name": "Wanted by Night",
+      "brand": "Azzaro",
       "category": "Hombre",
-      "price": 2300.00,
-      "ml": 125,
-      "description": "Una fragancia oriental especiada con notas de menta, lavanda, canela y vainilla.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.307.jpg"
+      "price": 2050.00,
+      "ml": 100,
+      "stock": 22,
+      "description": "Una fragancia oriental amaderada con notas de bergamota, canela y cuero.",
+      "image": "../images/perfumes/Azzaro/Azzaro Wanted By Night Eau De Parfum, 3.4 fl. oz..jpg"
     },
     {
-      "id": 38,
-      "name": "Ultra Male",
-      "brand": "Jean Paul Gaultier",
+      "id": 20,
+      "name": "Chrome EDT",
+      "brand": "Azzaro",
       "category": "Hombre",
-      "price": 2375.00,
-      "ml": 125,
-      "description": "Una fragancia oriental especiada intensa con notas de pera, menta y vainilla negra.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.32871.jpg"
+      "price": 1625.00,
+      "ml": 200,
+      "stock": 18,
+      "description": "Una fragancia cítrica acuática clásica con notas de limón, bergamota y cedro blanco.",
+      "image": "../images/perfumes/Azzaro/Loris Azzaro Men's Chrome Eau De Toilette Natural Spray, 6.8 Fl. Oz.jpg"
     },
     {
-      "id": 39,
+      "id": 21,
       "name": "Le Beau",
       "brand": "Jean Paul Gaultier",
       "category": "Hombre",
       "price": 2200.00,
       "ml": 125,
+      "stock": 16,
       "description": "Una fragancia aromática fresca con notas de bergamota, coco y sándalo.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.48923.jpg"
+      "image": "../images/perfumes/Jean_Paul_Gaultier/Jean Paul Gaultier Le Beau 125 ml EDP Spray.jpg"
     },
     {
-      "id": 40,
-      "name": "Scandal",
+      "id": 22,
+      "name": "Ultra Male",
       "brand": "Jean Paul Gaultier",
-      "category": "Mujer",
+      "category": "Hombre",
+      "price": 2375.00,
+      "ml": 125,
+      "stock": 14,
+      "description": "Una fragancia oriental especiada intensa con notas de pera, menta y vainilla negra.",
+      "image": "../images/perfumes/Jean_Paul_Gaultier/Jean Paul Gaultier - Spray intenso Ultra Male para hombre, eau de toilette, 4.2 onzas.jpg"
+    },
+    {
+      "id": 23,
+      "name": "212 Men Heroes",
+      "brand": "Carolina Herrera",
+      "category": "Hombre",
       "price": 2200.00,
-      "ml": 80,
-      "description": "Una fragancia floral gourmand con notas de miel, gardenia y pachulí.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.44344.jpg"
+      "ml": 90,
+      "stock": 20,
+      "description": "Una fragancia aromática moderna con notas de bergamota, canela y ámbar.",
+      "image": "../images/perfumes/Carolina_Herrera/Carolina Herrera - 212 Men Heroes para hombre  90 ml Eau De Toilette Spray'.jpg"
     },
     {
-      "id": 41,
-      "name": "Classique",
-      "brand": "Jean Paul Gaultier",
-      "category": "Mujer",
-      "price": 2125.00,
-      "ml": 100,
-      "description": "Una fragancia oriental floral con notas de rosa, flor de naranjo y vainilla.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.308.jpg"
-    },
-    {
-      "id": 42,
-      "name": "So Scandal",
-      "brand": "Jean Paul Gaultier",
-      "category": "Mujer",
-      "price": 2325.00,
-      "ml": 80,
-      "description": "Una fragancia floral frutal con notas de frambuesa, jazmín y leche de coco.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.54803.jpg"
-    },
-    {
-      "id": 43,
-      "name": "212",
+      "id": 24,
+      "name": "212 Pour Femme",
       "brand": "Carolina Herrera",
       "category": "Mujer",
       "price": 2125.00,
       "ml": 100,
+      "stock": 18,
       "description": "Una fragancia floral acuática con notas de bergamota, gardenia y almizcle blanco.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.315.jpg"
+      "image": "../images/perfumes/Carolina_Herrera/Carolina Herrera 212 Perfume for Women 3.4 oz Eau De Toilette Spray.jpg"
     },
     {
-      "id": 44,
-      "name": "212 VIP",
-      "brand": "Carolina Herrera",
-      "category": "Hombre",
-      "price": 2450.00,
-      "ml": 100,
-      "description": "Una fragancia aromática especiada con notas de lima, jengibre, vodka y ámbar.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.8063.jpg"
-    },
-    {
-      "id": 45,
-      "name": "CH Men",
-      "brand": "Carolina Herrera",
-      "category": "Hombre",
-      "price": 2225.00,
-      "ml": 100,
-      "description": "Una fragancia aromática especiada con notas de bergamota, nuez moscada y sándalo.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.316.jpg"
-    },
-    {
-      "id": 46,
-      "name": "Bad Boy",
-      "brand": "Carolina Herrera",
-      "category": "Hombre",
-      "price": 3125.00,
-      "ml": 100,
-      "description": "Una fragancia aromática especiada con notas de bergamota, pimienta negra y cacao.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.45343.jpg"
-    },
-    {
-      "id": 47,
-      "name": "Good Girl",
+      "id": 25,
+      "name": "CH",
       "brand": "Carolina Herrera",
       "category": "Mujer",
-      "price": 3375.00,
-      "ml": 80,
-      "description": "Una fragancia oriental floral con notas de almendra, café, jazmín y cacao.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.40554.jpg"
+      "price": 1900.00,
+      "ml": 100,
+      "stock": 22,
+      "description": "Una fragancia floral fresca con notas de bergamota, jazmín y sándalo.",
+      "image": "../images/perfumes/Carolina_Herrera/Carolina Herrera - Ch Eau de Toilette en aerosol para mujer, 3.4 onzas.jpg"
     },
     {
-      "id": 48,
-      "name": "Very Good Girl",
+      "id": 26,
+      "name": "Carolina Herrera EDT",
       "brand": "Carolina Herrera",
       "category": "Mujer",
-      "price": 3550.00,
-      "ml": 80,
-      "description": "Una fragancia frutal gourmand con notas de rosa, vainilla y cacao blanco.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.54892.jpg"
+      "price": 1850.00,
+      "ml": 100,
+      "stock": 24,
+      "description": "Una fragancia floral elegante con notas de bergamota, rosa y pachulí.",
+      "image": "../images/perfumes/Carolina_Herrera/Carolina Herrera - Eau de toilette en aerosol para mujer, 3.4 onzas 100 ml.jpg"
     },
     {
-      "id": 49,
+      "id": 27,
+      "name": "Good Girl Blush Elixir",
+      "brand": "Carolina Herrera",
+      "category": "Mujer",
+      "price": 3600.00,
+      "ml": 80,
+      "stock": 8,
+      "description": "Una fragancia oriental floral intensa con notas de café, jazmín y cacao.",
+      "image": "../images/perfumes/Carolina_Herrera/Carolina Herrera Good Girl Blush Elixir Eau De Parfum, 80 ml.jpg"
+    },
+    {
+      "id": 28,
+      "name": "212 Heroes Forever Young",
+      "brand": "Carolina Herrera",
+      "category": "Mujer",
+      "price": 2400.00,
+      "ml": 80,
+      "stock": 12,
+      "description": "Una fragancia floral frutal juvenil con notas de grosella, peonía y almizcle.",
+      "image": "../images/perfumes/Carolina_Herrera/Carolina Herrera - Spray EDP 212 Heroes Forever Young para mujer, 2.7 oz.jpg"
+    },
+    {
+      "id": 29,
       "name": "Light Blue",
       "brand": "Dolce & Gabbana",
       "category": "Mujer",
       "price": 1950.00,
       "ml": 100,
+      "stock": 25,
       "description": "Una fragancia floral frutal con notas de limón siciliano, manzana y bambú.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.328.jpg"
+      "image": "../images/perfumes/Dolce_&_Gabbana/Dolce & Gabbana - De color azul claro para mujer. Aerosol de 3.3 oz.jpg"
     },
     {
-      "id": 50,
-      "name": "The One",
+      "id": 30,
+      "name": "Devotion",
       "brand": "Dolce & Gabbana",
-      "category": "Hombre",
-      "price": 2375.00,
+      "category": "Mujer",
+      "price": 2800.00,
       "ml": 100,
-      "description": "Una fragancia oriental especiada con notas de bergamota, cardamomo y cedro.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.2433.jpg"
+      "stock": 15,
+      "description": "Una fragancia floral gourmand con notas de limón, flor de naranjo y vainilla.",
+      "image": "../images/perfumes/Dolce_&_Gabbana/Dolce&Gabbana Devotion for Women Eau de Parfum Spray, 3.4 Ounce.jpg"
     },
     {
-      "id": 51,
-      "name": "The One Intense",
-      "brand": "Dolce & Gabbana",
-      "category": "Hombre",
-      "price": 2625.00,
-      "ml": 100,
-      "description": "Una fragancia oriental especiada intensa con notas de bergamota, cardamomo y pachulí.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.45492.jpg"
-    },
-    {
-      "id": 52,
+      "id": 31,
       "name": "K",
       "brand": "Dolce & Gabbana",
       "category": "Hombre",
       "price": 2300.00,
       "ml": 100,
+      "stock": 20,
       "description": "Una fragancia aromática especiada con notas de limón, enebro, lavanda y vetiver.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.46661.jpg"
+      "image": "../images/perfumes/Dolce_&_Gabbana/Dolce & Gabbana - Eau de parfum en spray K para hombre de dolce & gabanna, 3.3 oz.jpg"
     },
     {
-      "id": 53,
+      "id": 32,
       "name": "Intenso",
       "brand": "Dolce & Gabbana",
       "category": "Hombre",
       "price": 2200.00,
       "ml": 125,
+      "stock": 18,
       "description": "Una fragancia aromática especiada con notas de lavanda, geranio, tabaco y heno.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.31750.jpg"
+      "image": "../images/perfumes/Dolce_&_Gabbana/Dolce & Gabbana - Spray Dolce Gabbana Intenso para hombre, 4.2 onzas líquidas.jpg"
     },
     {
-      "id": 54,
-      "name": "Pour Femme",
+      "id": 33,
+      "name": "The Only One",
       "brand": "Dolce & Gabbana",
       "category": "Mujer",
-      "price": 2125.00,
+      "price": 2600.00,
       "ml": 100,
-      "description": "Una fragancia floral oriental con notas de mandarina, neroli y almizcle.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.329.jpg"
+      "stock": 14,
+      "description": "Una fragancia floral oriental con notas de bergamota, café y vainilla.",
+      "image": "../images/perfumes/Dolce_&_Gabbana/Dolce & Gabbana The Only One Eau De Parfum Spray for Women, 3.3 Ounce.jpg"
     },
     {
-      "id": 55,
+      "id": 34,
+      "name": "Q Gift Set",
+      "brand": "Dolce & Gabbana",
+      "category": "Mujer",
+      "price": 2100.00,
+      "ml": 50,
+      "stock": 10,
+      "description": "Una fragancia floral fresca con notas de limón, jazmín y almizcle blanco.",
+      "image": "../images/perfumes/Dolce_&_Gabbana/Q by Dolce and Gabbana for Women - 2 Pc Gift Set 1.7oz EDP Spray, 0.33oz EDP Spray.jpg"
+    },
+    {
+      "id": 35,
       "name": "Y",
       "brand": "YSL",
       "category": "Hombre",
       "price": 2700.00,
       "ml": 100,
+      "stock": 22,
       "description": "Una fragancia aromática fresca con notas de bergamota, jengibre, salvia y cedro blanco.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.46900.jpg"
+      "image": "../images/perfumes/YSL/Yves Saint Laurent Y Eau De Toilette Spray 100ml.jpg"
     },
     {
-      "id": 56,
-      "name": "Y Le Parfum",
-      "brand": "YSL",
-      "category": "Hombre",
-      "price": 3125.00,
-      "ml": 100,
-      "description": "Una fragancia aromática intensa con notas de bergamota, lavanda, geranio y oud.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.56081.jpg"
-    },
-    {
-      "id": 57,
-      "name": "La Nuit de L'Homme",
-      "brand": "YSL",
-      "category": "Hombre",
-      "price": 2875.00,
-      "ml": 100,
-      "description": "Una fragancia oriental especiada con notas de bergamota, lavanda, cedro y cumaré.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.5714.jpg"
-    },
-    {
-      "id": 58,
-      "name": "L'Homme",
-      "brand": "YSL",
-      "category": "Hombre",
-      "price": 2550.00,
-      "ml": 100,
-      "description": "Una fragancia aromática especiada con notas de bergamota, jengibre, cedro y vetiver.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.2928.jpg"
-    },
-    {
-      "id": 59,
-      "name": "Black Opium",
+      "id": 36,
+      "name": "Mon Paris",
       "brand": "YSL",
       "category": "Mujer",
-      "price": 3200.00,
+      "price": 2950.00,
       "ml": 90,
-      "description": "Una fragancia oriental gourmand con notas de café negro, flor de naranjo y vainilla.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.28851.jpg"
+      "stock": 16,
+      "description": "Una fragancia floral frutal con notas de fresa, frambuesa, peonía y pachulí blanco.",
+      "image": "../images/perfumes/YSL/Yves Saint Laurent Mon Paris Spray, 3 Fluid Ounce.jpg"
     },
     {
-      "id": 60,
-      "name": "Libre",
-      "brand": "YSL",
+      "id": 37,
+      "name": "9PM",
+      "brand": "Afnan",
+      "category": "Hombre",
+      "price": 850.00,
+      "ml": 100,
+      "stock": 35,
+      "description": "Una fragancia oriental especiada con notas de bergamota, rosa y oud.",
+      "image": "../images/perfumes/Otros/Afnan Agua de Perfume EDP 9PM para Hombres, 100 ml.jpg"
+    },
+    {
+      "id": 38,
+      "name": "Odyssey Mandarin Sky",
+      "brand": "Armaf",
+      "category": "Hombre",
+      "price": 950.00,
+      "ml": 100,
+      "stock": 30,
+      "description": "Una fragancia cítrica fresca con notas de mandarina, bergamota y almizcle.",
+      "image": "../images/perfumes/Otros/Armaf Odyssey Mandarin Sky Eau de Parfum Spray for Men, 3.4 Ounce.jpg"
+    },
+    {
+      "id": 39,
+      "name": "La Nuit Trésor",
+      "brand": "Lancôme",
       "category": "Mujer",
-      "price": 3300.00,
-      "ml": 90,
-      "description": "Una fragancia floral oriental con notas de bergamota, lavanda, flor de naranjo y vainilla.",
-      "image": "https://fraguru.com/mdimg/perfume/375x500.51176.jpg"
+      "price": 2650.00,
+      "ml": 75,
+      "stock": 18,
+      "description": "Una fragancia oriental gourmand con notas de vainilla, rosa negra y orquídea.",
+      "image": "../images/perfumes/Otros/Lancôme La Nuit Trésor Eau De Parfum - Perfume de Mujer, Perfume Dulce e Intenso, Fragancia Duradera con Notas de Vainilla, Rosa Negra y Orquídea.jpg"
+    },
+    {
+      "id": 40,
+      "name": "La Vie Est Belle Iris Absolu",
+      "brand": "Lancôme",
+      "category": "Mujer",
+      "price": 2850.00,
+      "ml": 75,
+      "stock": 15,
+      "description": "Una fragancia floral intensa con notas de iris pallida, higo y pachulí.",
+      "image": "../images/perfumes/Otros/Lancôme La Vie Est Belle Iris Absolu - Eau De Parfum Floral Intenso Irradia Felicidad, Fragancia con Notas de Iris Pallida, Higo y Pachuli.jpg"
+    },
+    {
+      "id": 41,
+      "name": "La Vie Est Belle Rose Extraordinaire",
+      "brand": "Lancôme",
+      "category": "Mujer",
+      "price": 2750.00,
+      "ml": 100,
+      "stock": 12,
+      "description": "Una fragancia floral cálida con trío de rosas, iris y matices amaderados.",
+      "image": "../images/perfumes/Otros/Lancôme La Vie Est Belle Rose Extraordinaire, Eau De Parfum – Perfume de Mujer, Fragancia Floral Cálida y Duradera con Trío de Rosas, Íris y Matices Amaderados, 100 ml.jpg"
+    },
+    {
+      "id": 42,
+      "name": "Khamrah Qahwa",
+      "brand": "Lattafa",
+      "category": "Unisex",
+      "price": 750.00,
+      "ml": 100,
+      "stock": 40,
+      "description": "Una fragancia oriental especiada con notas de café, canela y ámbar.",
+      "image": "../images/perfumes/Otros/Lattafa Khamrah Qahwa Eau de Parfum Spray for Unisex, 3.4 Ounce.jpg"
+    },
+    {
+      "id": 43,
+      "name": "Toy Boy",
+      "brand": "Moschino",
+      "category": "Hombre",
+      "price": 1650.00,
+      "ml": 100,
+      "stock": 25,
+      "description": "Una fragancia aromática especiada con notas de pera, rosa y cashmeran.",
+      "image": "../images/perfumes/Otros/Moschino Toy Boy Edp Vapo 100 ml - 100 ml TOYBOY5132.jpg"
+    },
+    {
+      "id": 44,
+      "name": "Voyage",
+      "brand": "Nautica",
+      "category": "Hombre",
+      "price": 680.00,
+      "ml": 100,
+      "stock": 45,
+      "description": "Una fragancia acuática fresca con notas de manzana verde, mimosa y almizcle.",
+      "image": "../images/perfumes/Otros/Nautica Voyage Eau de Toilette para Hombre, Multicolor, 100 ml.jpg"
+    },
+    {
+      "id": 45,
+      "name": "Ralph's Club New York",
+      "brand": "Ralph Lauren",
+      "category": "Hombre",
+      "price": 2200.00,
+      "ml": 110,
+      "stock": 20,
+      "description": "Una fragancia ambarina fougère con vainilla, lavanda y sándalo.",
+      "image": "../images/perfumes/Otros/Ralph Lauren Ralph's Club New York Eau de Parfum - Perfume para Hombre, Fragancia Ambarina y Fougère con Vainilla, Lavanda y Sándalo, Elegancia Moderna, 110ml.jpg"
     }
   ]
 }
