@@ -28,6 +28,57 @@
             background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
             color: white;
         }
+        
+        .chart-container {
+            position: relative;
+            height: 400px;
+        }
+        
+        .image-gallery {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .card {
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            border: 1px solid rgba(0, 0, 0, 0.125);
+            transition: box-shadow 0.15s ease-in-out;
+        }
+        
+        .card:hover {
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        }
+        
+        .bg-gradient {
+            background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0));
+        }
+        
+        .border-dashed {
+            border: 2px dashed #dee2e6 !important;
+        }
+        
+        .border-dashed:hover {
+            border-color: #007bff !important;
+            background-color: #f8f9fa;
+        }
+        
+        .stats-animation {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .chart-card {
+            transition: transform 0.2s ease-in-out;
+        }
+        
+        .chart-card:hover {
+            transform: translateY(-5px);
+        }
     </style>
 </head>
 <body>
@@ -58,6 +109,11 @@
                         <li class="nav-item">
                             <a class="nav-link text-white" href="#users">
                                 <i class="fas fa-users"></i> Usuarios
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="#images">
+                                <i class="fas fa-images"></i> Imágenes
                             </a>
                         </li>
                         <li class="nav-item">
@@ -149,25 +205,163 @@
                     </div>
                 </div>
 
-                <!-- Charts -->
-                <div class="row">
-                    <div class="col-md-8">
-                        <div class="card">
-                            <div class="card-header">
-                                <h5>Ventas del Mes</h5>
+                <!-- Analytics Dashboard -->
+                <div class="row mb-4">
+                    <div class="col-lg-6 mb-4">
+                        <div class="card h-100 shadow-sm chart-card">
+                            <div class="card-header bg-gradient bg-primary text-white">
+                                <h5 class="mb-0"><i class="fas fa-chart-pie me-2"></i>Ventas por Periodo</h5>
+                                <small class="text-light">Distribución de ventas temporales</small>
                             </div>
-                            <div class="card-body">
-                                <canvas id="salesChart" width="400" height="200"></canvas>
+                            <div class="card-body chart-container">
+                                <canvas id="salesPieChart"></canvas>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4">
-                        <div class="card">
-                            <div class="card-header">
-                                <h5>Productos Más Vendidos</h5>
+                    <div class="col-lg-6 mb-4">
+                        <div class="card h-100 shadow-sm chart-card">
+                            <div class="card-header bg-gradient bg-success text-white">
+                                <h5 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Productos Más Vendidos</h5>
+                                <small class="text-light">Top 5 productos por unidades</small>
+                            </div>
+                            <div class="card-body chart-container">
+                                <canvas id="productsBarChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="card shadow-sm chart-card">
+                            <div class="card-header bg-gradient bg-info text-white d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h5 class="mb-0"><i class="fas fa-chart-line me-2"></i>Evolución de Ventas Mensuales</h5>
+                                    <small class="text-light">Tendencia de ventas durante el año</small>
+                                </div>
+                                <div class="btn-group" role="group">
+                                    <button type="button" class="btn btn-sm btn-outline-light">2024</button>
+                                    <button type="button" class="btn btn-sm btn-light">2025</button>
+                                </div>
+                            </div>
+                            <div class="card-body" style="height: 300px;">
+                                <canvas id="salesLineChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gestión de Imágenes -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="card shadow-sm">
+                            <div class="card-header bg-gradient bg-warning text-dark">
+                                <h5 class="mb-0"><i class="fas fa-images me-2"></i>Gestión de Imágenes</h5>
                             </div>
                             <div class="card-body">
-                                <canvas id="productsChart" width="200" height="200"></canvas>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h6 class="text-primary">Subir Nueva Imagen</h6>
+                                        <form id="imageUploadForm" class="mb-4">
+                                            <div class="mb-3">
+                                                <label for="imageFile" class="form-label">Seleccionar Imagen</label>
+                                                <input type="file" class="form-control" id="imageFile" accept="image/*" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="imageName" class="form-label">Nombre de la Imagen</label>
+                                                <input type="text" class="form-control" id="imageName" placeholder="Ej: producto-perfume-1" required>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="imageCategory" class="form-label">Categoría</label>
+                                                <select class="form-select" id="imageCategory" required>
+                                                    <option value="">Seleccionar categoría</option>
+                                                    <option value="productos">Productos</option>
+                                                    <option value="banners">Banners</option>
+                                                    <option value="promociones">Promociones</option>
+                                                </select>
+                                            </div>
+                                            <div class="d-grid">
+                                                <button type="submit" class="btn btn-primary">
+                                                    <i class="fas fa-upload me-2"></i>Subir Imagen
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6 class="text-success">Imágenes Existentes</h6>
+                                        <div id="imageGallery" class="row g-3 image-gallery">
+                                            <!-- Las imágenes se cargarán aquí dinámicamente -->
+                                            <div class="col-6 col-lg-3">
+                                                <div class="card h-100">
+                                                    <img src="../images/perfume1.jpg" class="card-img-top" alt="Perfume 1" style="height: 120px; object-fit: cover;">
+                                                    <div class="card-body p-2">
+                                                        <h6 class="card-title text-truncate mb-1">perfume1.jpg</h6>
+                                                        <small class="text-muted d-block mb-2">Productos</small>
+                                                        <div class="btn-group w-100" role="group">
+                                                            <button class="btn btn-sm btn-outline-danger" onclick="deleteImage('perfume1.jpg')" title="Eliminar">
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>
+                                                            <button class="btn btn-sm btn-outline-primary" onclick="editImage('perfume1.jpg')" title="Editar">
+                                                                <i class="fas fa-edit"></i>
+                                                            </button>
+                                                            <button class="btn btn-sm btn-outline-info" onclick="viewImage('perfume1.jpg')" title="Ver">
+                                                                <i class="fas fa-eye"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-6 col-lg-3">
+                                                <div class="card h-100">
+                                                    <img src="../images/perfume2.jpg" class="card-img-top" alt="Perfume 2" style="height: 120px; object-fit: cover;">
+                                                    <div class="card-body p-2">
+                                                        <h6 class="card-title text-truncate mb-1">perfume2.jpg</h6>
+                                                        <small class="text-muted d-block mb-2">Productos</small>
+                                                        <div class="btn-group w-100" role="group">
+                                                            <button class="btn btn-sm btn-outline-danger" onclick="deleteImage('perfume2.jpg')" title="Eliminar">
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>
+                                                            <button class="btn btn-sm btn-outline-primary" onclick="editImage('perfume2.jpg')" title="Editar">
+                                                                <i class="fas fa-edit"></i>
+                                                            </button>
+                                                            <button class="btn btn-sm btn-outline-info" onclick="viewImage('perfume2.jpg')" title="Ver">
+                                                                <i class="fas fa-eye"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-6 col-lg-3">
+                                                <div class="card h-100">
+                                                    <img src="../images/perfume3.jpg" class="card-img-top" alt="Perfume 3" style="height: 120px; object-fit: cover;">
+                                                    <div class="card-body p-2">
+                                                        <h6 class="card-title text-truncate mb-1">perfume3.jpg</h6>
+                                                        <small class="text-muted d-block mb-2">Banners</small>
+                                                        <div class="btn-group w-100" role="group">
+                                                            <button class="btn btn-sm btn-outline-danger" onclick="deleteImage('perfume3.jpg')" title="Eliminar">
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>
+                                                            <button class="btn btn-sm btn-outline-primary" onclick="editImage('perfume3.jpg')" title="Editar">
+                                                                <i class="fas fa-edit"></i>
+                                                            </button>
+                                                            <button class="btn btn-sm btn-outline-info" onclick="viewImage('perfume3.jpg')" title="Ver">
+                                                                <i class="fas fa-eye"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-6 col-lg-3">
+                                                <div class="card h-100 border-dashed">
+                                                    <div class="card-body d-flex flex-column align-items-center justify-content-center text-muted" style="height: 120px;">
+                                                        <i class="fas fa-plus-circle fa-2x mb-2"></i>
+                                                        <small>Subir más imágenes</small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -318,73 +512,168 @@
             }
             
             try {
-                // Gráfico de ventas
-                console.log('📈 Creating sales chart...');
-                const salesCanvas = document.getElementById('salesChart');
-                if (!salesCanvas) {
-                    console.error('❌ Sales chart canvas not found!');
-                    return;
+                // Gráfico de pastel - Ventas por periodo
+                console.log('🥧 Creating sales pie chart...');
+                const salesPieCanvas = document.getElementById('salesPieChart');
+                if (salesPieCanvas) {
+                    const salesPieCtx = salesPieCanvas.getContext('2d');
+                    new Chart(salesPieCtx, {
+                        type: 'pie',
+                        data: {
+                            labels: ['Ventas Diarias', 'Ventas Semanales', 'Ventas Mensuales', 'Ventas Anuales'],
+                            datasets: [{
+                                data: [35, 25, 30, 10],
+                                backgroundColor: [
+                                    '#FF6B8A',
+                                    '#4ECDC4',
+                                    '#45B7D1',
+                                    '#FFA07A'
+                                ],
+                                borderWidth: 2,
+                                borderColor: '#fff'
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'bottom',
+                                    labels: {
+                                        padding: 15,
+                                        usePointStyle: true
+                                    }
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            return context.label + ': ' + context.parsed + '%';
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                    console.log('✅ Sales pie chart created successfully');
+                }
+
+                // Gráfico de barras - Productos más vendidos
+                console.log('📊 Creating products bar chart...');
+                const productsBarCanvas = document.getElementById('productsBarChart');
+                if (productsBarCanvas) {
+                    const productsBarCtx = productsBarCanvas.getContext('2d');
+                    new Chart(productsBarCtx, {
+                        type: 'bar',
+                        data: {
+                            labels: ['Chanel No. 5', 'Dior Sauvage', 'Tom Ford', 'Versace Eros', 'Calvin Klein'],
+                            datasets: [{
+                                label: 'Unidades Vendidas',
+                                data: [150, 120, 98, 85, 70],
+                                backgroundColor: [
+                                    'rgba(255, 99, 132, 0.8)',
+                                    'rgba(54, 162, 235, 0.8)',
+                                    'rgba(255, 205, 86, 0.8)',
+                                    'rgba(75, 192, 192, 0.8)',
+                                    'rgba(153, 102, 255, 0.8)'
+                                ],
+                                borderColor: [
+                                    'rgba(255, 99, 132, 1)',
+                                    'rgba(54, 162, 235, 1)',
+                                    'rgba(255, 205, 86, 1)',
+                                    'rgba(75, 192, 192, 1)',
+                                    'rgba(153, 102, 255, 1)'
+                                ],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    display: false
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(context) {
+                                            return context.dataset.label + ': ' + context.parsed.y + ' unidades';
+                                        }
+                                    }
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        stepSize: 20
+                                    }
+                                }
+                            }
+                        }
+                    });
+                    console.log('✅ Products bar chart created successfully');
+                }
+
+                // Gráfico de línea - Evolución de ventas mensuales
+                console.log('📈 Creating sales line chart...');
+                const salesLineCanvas = document.getElementById('salesLineChart');
+                if (salesLineCanvas) {
+                    const salesLineCtx = salesLineCanvas.getContext('2d');
+                    new Chart(salesLineCtx, {
+                        type: 'line',
+                        data: {
+                            labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+                            datasets: [{
+                                label: 'Ventas ($)',
+                                data: [1200, 1900, 3000, 2500, 2200, 3200, 2800, 3500, 4000, 3800, 4200, 4500],
+                                borderColor: 'rgb(75, 192, 192)',
+                                backgroundColor: 'rgba(75, 192, 192, 0.1)',
+                                tension: 0.4,
+                                fill: true,
+                                pointBackgroundColor: 'rgb(75, 192, 192)',
+                                pointBorderColor: '#fff',
+                                pointBorderWidth: 2,
+                                pointRadius: 5
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    display: true,
+                                    position: 'top'
+                                },
+                                tooltip: {
+                                    mode: 'index',
+                                    intersect: false,
+                                    callbacks: {
+                                        label: function(context) {
+                                            return context.dataset.label + ': $' + context.parsed.y.toLocaleString();
+                                        }
+                                    }
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        callback: function(value) {
+                                            return '$' + value.toLocaleString();
+                                        }
+                                    }
+                                }
+                            },
+                            interaction: {
+                                mode: 'nearest',
+                                axis: 'x',
+                                intersect: false
+                            }
+                        }
+                    });
+                    console.log('✅ Sales line chart created successfully');
                 }
                 
-                const salesCtx = salesCanvas.getContext('2d');
-                const salesChart = new Chart(salesCtx, {
-                type: 'line',
-                data: {
-                    labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
-                    datasets: [{
-                        label: 'Ventas ($)',
-                        data: [1200, 1900, 3000, 2500, 2200, 3200, 2800, 3500, 4000, 3800, 4200, 4500],
-                        borderColor: 'rgb(75, 192, 192)',
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                        tension: 0.4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-            console.log('✅ Sales chart created successfully');
-
-            // Gráfico de productos más vendidos  
-            console.log('🍩 Creating products doughnut chart...');
-            const productsCanvas = document.getElementById('productsChart');
-            if (!productsCanvas) {
-                console.error('❌ Products chart canvas not found!');
-                return;
-            }
-            
-            const productsCtx = productsCanvas.getContext('2d');
-            const productsChart = new Chart(productsCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Chanel No. 5', 'Dior Sauvage', 'Tom Ford Black Orchid', 'Versace Eros', 'Others'],
-                    datasets: [{
-                        data: [30, 25, 20, 15, 10],
-                        backgroundColor: [
-                            '#FF6384',
-                            '#36A2EB',
-                            '#FFCE56',
-                            '#4BC0C0',
-                            '#9966FF'
-                        ]
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: 'bottom'
-                        }
-                    }
-                }
-            });
-            console.log('✅ Products chart created successfully');
-            
             } catch (error) {
                 console.error('💥 Error creating charts:', error);
                 showChartError();
@@ -396,21 +685,111 @@
             if (chartsSection) {
                 chartsSection.innerHTML = `
                     <div class="col-12">
-                        <div class="alert alert-warning">
-                            <h4><i class="fas fa-exclamation-triangle me-2"></i>Error en Gráficos</h4>
-                            <p>No se pudieron cargar los gráficos. Esto puede deberse a:</p>
-                            <ul>
-                                <li>Chart.js no se cargó correctamente</li>
-                                <li>Error de conexión a internet</li>
-                                <li>Problema con el canvas HTML</li>
-                            </ul>
-                            <button class="btn btn-primary" onclick="location.reload()">
-                                <i class="fas fa-refresh me-2"></i>Recargar Página
+                        <div class="alert alert-danger">
+                            <h4><i class="fas fa-exclamation-triangle me-2"></i>Error al cargar gráficos</h4>
+                            <p>Los gráficos no pudieron inicializarse correctamente. Intentando recargar...</p>
+                            <button class="btn btn-outline-danger" onclick="location.reload()">
+                                <i class="fas fa-refresh me-2"></i>Recargar Dashboard
                             </button>
                         </div>
                     </div>
                 `;
             }
+        }
+
+        // Funciones para gestión de imágenes
+        function handleImageUpload(event) {
+            event.preventDefault();
+            
+            const fileInput = document.getElementById('imageFile');
+            const nameInput = document.getElementById('imageName');
+            const categorySelect = document.getElementById('imageCategory');
+            
+            if (!fileInput.files[0]) {
+                alert('Por favor selecciona una imagen');
+                return;
+            }
+            
+            // Simular subida de imagen (en producción conectar con backend)
+            const formData = new FormData();
+            formData.append('image', fileInput.files[0]);
+            formData.append('name', nameInput.value);
+            formData.append('category', categorySelect.value);
+            
+            // Mostrar progreso
+            const submitBtn = event.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Subiendo...';
+            submitBtn.disabled = true;
+            
+            // Simular upload (reemplazar con fetch real)
+            setTimeout(() => {
+                alert('Imagen subida correctamente');
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+                
+                // Limpiar formulario
+                fileInput.value = '';
+                nameInput.value = '';
+                categorySelect.value = '';
+                
+                // Recargar galería
+                loadImageGallery();
+            }, 2000);
+        }
+        
+        function deleteImage(imageName) {
+            if (confirm(`¿Estás seguro de que quieres eliminar ${imageName}?`)) {
+                // Aquí haríais la llamada al backend para eliminar
+                console.log('Eliminando imagen:', imageName);
+                alert('Imagen eliminada correctamente');
+                loadImageGallery();
+            }
+        }
+        
+        function editImage(imageName) {
+            const newName = prompt(`Nuevo nombre para ${imageName}:`, imageName);
+            if (newName && newName !== imageName) {
+                // Aquí haríais la llamada al backend para renombrar
+                console.log('Renombrando imagen:', imageName, 'a', newName);
+                alert('Imagen renombrada correctamente');
+                loadImageGallery();
+            }
+        }
+        
+        function viewImage(imageName) {
+            // Mostrar imagen en modal
+            const modal = document.createElement('div');
+            modal.className = 'modal fade';
+            modal.innerHTML = `
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Vista previa: ${imageName}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body text-center">
+                            <img src="../images/${imageName}" class="img-fluid" alt="${imageName}">
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            
+            const bsModal = new bootstrap.Modal(modal);
+            bsModal.show();
+            
+            modal.addEventListener('hidden.bs.modal', () => {
+                document.body.removeChild(modal);
+            });
+        }
+        
+        function loadImageGallery() {
+            // Cargar imágenes existentes desde el servidor
+            console.log('Cargando galería de imágenes...');
+            
+            // En producción, esto haría una llamada AJAX al servidor
+            // para obtener la lista de imágenes disponibles
         }
 
         // Cargar datos del dashboard
@@ -530,6 +909,15 @@
                     initCharts();
                     hideLoadingIndicator();
                 });
+                
+                // Configurar formulario de subida de imágenes
+                const imageForm = document.getElementById('imageUploadForm');
+                if (imageForm) {
+                    imageForm.addEventListener('submit', handleImageUpload);
+                }
+                
+                // Cargar galería inicial
+                loadImageGallery();
             }
         });
         

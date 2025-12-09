@@ -1,96 +1,133 @@
 // =====================================================
-// PERFUMES PAGE - COMPLETE FUNCTIONALITY
+// PERFUMES PAGE FUNCTIONALITY
+// Filter, sort, and display products with real-time search
 // =====================================================
 
 let allProducts = [];
 let filteredProducts = [];
-let currentPage = 1;
-const productsPerPage = 15; // 15 productos por página
+let currentFilters = {
+    search: '',
+    gender: 'todos',
+    brands: [],
+    priceRange: [],
+    concentration: []
+};
 
 // Initialize when DOM loads
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 Perfumes page loading...');
-    initializePage();
+    initializePerfumesPage();
 });
 
-async function initializePage() {
-    try {
-        console.log('📦 Loading products...');
-        await loadProducts();
-        console.log('🔧 Initializing filters...');
-        initializeFilters();
-        console.log('✅ Page initialized successfully');
-    } catch (error) {
-        console.error('❌ Error initializing page:', error);
-        showErrorState();
-    }
+function initializePerfumesPage() {
+    loadProducts();
+    initializeFilters();
+    initializeSorting();
+    initializeViewToggle();
+    parseUrlParams();
 }
 
 // Load products from JSON file
 async function loadProducts() {
     try {
-        const response = await fetch('../js/perfumes.json');
+        console.log('Starting to load products...');
+        const response = await fetch('/e-commerce-proyect/js/perfumes.json');
+        console.log('Fetch response:', response);
         
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         
         const data = await response.json();
-        console.log('✅ Products loaded:', data.perfumes.length);
+        console.log('Raw JSON data:', data);
         
-        // Map products with correct image paths
+        // Use the products directly from the updated JSON
         allProducts = data.perfumes.map(perfume => ({
             id: perfume.id,
             name: perfume.name,
-            brand: perfume.brand.toLowerCase(),
-            price: parseFloat(perfume.price),
-            image: getCorrectImagePath(perfume.image),
-            category: perfume.category ? perfume.category.toLowerCase() : 'unisex',
+            brand: perfume.brand,
+            price: perfume.price,
+            originalPrice: perfume.price > 2500 ? Math.round(perfume.price * 1.15) : null,
+            image: perfume.image,
+            category: perfume.category.toLowerCase(),
+            concentration: getConcentrationFromName(perfume.name),
             ml: perfume.ml,
-            stock: perfume.stock || 10,
-            concentration: perfume.concentration || 'eau-de-parfum',
-            description: perfume.description || 'Fragancia premium de alta calidad.',
-            notes: perfume.notes || []
+            stock: perfume.stock,
+            rating: Math.round((4.0 + Math.random() * 1.0) * 10) / 10,
+            reviews: Math.floor(Math.random() * 200) + 50,
+            description: perfume.description,
+            notes: perfume.description.substring(0, 80) + (perfume.description.length > 80 ? '...' : ''),
+            featured: Math.random() > 0.7,
+            new: Math.random() > 0.85,
+            sale: perfume.price > 2500 && Math.random() > 0.6
         }));
-
-        filteredProducts = [...allProducts];
-        displayProducts();
-        updateResultsCount();
         
+        console.log('Products loaded from JSON:', allProducts.length);
+        console.log('First product:', allProducts[0]);
+        filteredProducts = [...allProducts];
+        console.log('About to render products...');
+        renderProducts();
+        updateResultsCount();
     } catch (error) {
-        console.error('❌ Error loading products:', error);
-        throw error;
+        console.error('Error loading perfumes:', error);
+        // Show error to user
+        const productsGrid = document.getElementById('productsGrid') || document.getElementById('productos-container');
+        if (productsGrid) {
+            productsGrid.innerHTML = `
+                <div class="col-12 text-center py-5">
+                    <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                    <h4 class="text-muted">Error cargando productos</h4>
+                    <p class="text-muted">Por favor, recarga la página</p>
+                </div>
+            `;
+        }
+        return;
     }
 }
 
-// Get correct image path
-function getCorrectImagePath(imagePath) {
-    if (!imagePath) return '../images/perfumes/default.jpg';
+// Parse URL parameters for initial filters
+function parseUrlParams() {
+    const urlParams = new URLSearchParams(window.location.search);
     
-    // If it's already a full path, return as is
-    if (imagePath.startsWith('http') || imagePath.startsWith('../')) {
-        return imagePath;
+    // Set gender filter
+    const genero = urlParams.get('genero');
+    if (genero) {
+        const genderRadio = document.querySelector(`input[name="genero"][value="${genero}"]`);
+        if (genderRadio) {
+            genderRadio.checked = true;
+        }
     }
     
-    // Convert relative path to absolute
-    if (imagePath.startsWith('/')) {
-        return '..' + imagePath;
+    // Set brand filter
+    const marca = urlParams.get('marca');
+    if (marca) {
+        const brandCheckbox = document.getElementById(marca);
+        if (brandCheckbox) {
+            brandCheckbox.checked = true;
+        }
     }
     
-    return '../' + imagePath;
+    // Set search filter
+    const search = urlParams.get('search');
+    if (search) {
+        const searchInput = document.getElementById('searchFilter');
+        if (searchInput) {
+            searchInput.value = search;
+        }
+    }
+    
+    // Apply initial filters
+    setTimeout(applyFilters, 100);
 }
 
-// Initialize all filters
+// Initialize filter functionality
 function initializeFilters() {
-    console.log('🔧 Setting up filters...');
-    
     // Search filter
     const searchInput = document.getElementById('searchFilter');
     if (searchInput) {
         searchInput.addEventListener('input', debounce(applyFilters, 300));
     }
     
-    // Gender filter
+    // Gender filters
     document.querySelectorAll('input[name="genero"]').forEach(radio => {
         radio.addEventListener('change', applyFilters);
     });
@@ -106,95 +143,136 @@ function initializeFilters() {
     });
     
     // Concentration filters
-    document.querySelectorAll('input[id^="edp"], input[id^="edt"], input[id^="parfum"]').forEach(checkbox => {
+    document.querySelectorAll('input[id="edp"], input[id="edt"], input[id="parfum"]').forEach(checkbox => {
         checkbox.addEventListener('change', applyFilters);
     });
     
-    // Sort dropdown
-    const sortSelect = document.getElementById('sortBy');
-    if (sortSelect) {
-        sortSelect.addEventListener('change', applySorting);
-    }
-    
-    // Clear filters button
+    // Clear filters
     const clearButton = document.getElementById('clearFilters');
     if (clearButton) {
         clearButton.addEventListener('click', clearAllFilters);
     }
-    
-    console.log('✅ Filters initialized');
 }
 
-// Apply all filters
+// Apply all active filters
 function applyFilters() {
-    console.log('🔍 Applying filters...');
+    filteredProducts = [...allProducts];
     
-    filteredProducts = allProducts.filter(product => {
-        // Search filter
-        const searchQuery = document.getElementById('searchFilter')?.value.toLowerCase() || '';
-        if (searchQuery && !product.name.toLowerCase().includes(searchQuery) && 
-            !product.brand.toLowerCase().includes(searchQuery)) {
-            return false;
-        }
-        
-        // Gender filter
-        const selectedGender = document.querySelector('input[name="genero"]:checked')?.value;
-        if (selectedGender && selectedGender !== 'todos') {
-            if (product.category !== selectedGender) {
-                return false;
+    // Search filter
+    const searchTerm = document.getElementById('searchFilter')?.value.toLowerCase().trim();
+    if (searchTerm) {
+        filteredProducts = filteredProducts.filter(product => 
+            product.name.toLowerCase().includes(searchTerm) ||
+            product.brand.toLowerCase().includes(searchTerm) ||
+            product.description.toLowerCase().includes(searchTerm) ||
+            product.notes.toLowerCase().includes(searchTerm)
+        );
+    }
+    
+    // Gender filter
+    const selectedGender = document.querySelector('input[name="genero"]:checked')?.value;
+    if (selectedGender && selectedGender !== 'todos') {
+        console.log('Selected gender:', selectedGender);
+        filteredProducts = filteredProducts.filter(product => {
+            const match = product.category === selectedGender;
+            if (!match) {
+                console.log(`Product ${product.name} category ${product.category} does not match ${selectedGender}`);
             }
-        }
-        
-        // Brand filters
-        const selectedBrands = Array.from(document.querySelectorAll('.brand-filters input[type="checkbox"]:checked'))
-            .map(cb => cb.value);
-        if (selectedBrands.length > 0) {
-            const productBrand = product.brand.toLowerCase().replace(/\s+/g, '-');
-            if (!selectedBrands.some(brand => productBrand.includes(brand) || brand.includes(productBrand))) {
-                return false;
-            }
-        }
-        
-        // Price filters
-        const selectedPrices = Array.from(document.querySelectorAll('input[id^="price"]:checked'))
-            .map(cb => cb.value);
-        if (selectedPrices.length > 0) {
-            const price = product.price;
-            let priceMatch = false;
-            
-            selectedPrices.forEach(range => {
-                if (range === '0-2000' && price <= 2000) priceMatch = true;
-                if (range === '2000-5000' && price > 2000 && price <= 5000) priceMatch = true;
-                if (range === '5000-10000' && price > 5000 && price <= 10000) priceMatch = true;
-                if (range === '10000+' && price > 10000) priceMatch = true;
+            return match;
+        });
+        console.log('Filtered products after gender filter:', filteredProducts.length);
+    }
+    
+    // Brand filters
+    const selectedBrands = Array.from(document.querySelectorAll('.brand-filters input[type="checkbox"]:checked'))
+        .map(cb => cb.value);
+    if (selectedBrands.length > 0) {
+        console.log('Selected brands:', selectedBrands);
+        filteredProducts = filteredProducts.filter(product => {
+            const productBrand = product.brand.toLowerCase();
+            return selectedBrands.some(selectedBrand => {
+                if (selectedBrand === 'dolce-gabbana') {
+                    return productBrand.includes('dolce') && productBrand.includes('gabbana');
+                }
+                if (selectedBrand === 'jean-paul-gaultier') {
+                    return productBrand.includes('jean') && productBrand.includes('paul') && productBrand.includes('gaultier');
+                }
+                if (selectedBrand === 'carolina-herrera') {
+                    return productBrand.includes('carolina') && productBrand.includes('herrera');
+                }
+                const match = productBrand === selectedBrand || 
+                       productBrand.replace(/\s+/g, '-').toLowerCase() === selectedBrand ||
+                       productBrand.replace(/\s+/g, '').toLowerCase() === selectedBrand.replace(/-/g, '');
+                console.log(`Checking brand: ${productBrand} against ${selectedBrand}, match: ${match}`);
+                return match;
             });
-            
-            if (!priceMatch) return false;
-        }
-        
-        // Concentration filters
-        const selectedConcentrations = Array.from(document.querySelectorAll('input[id^="edp"]:checked, input[id^="edt"]:checked, input[id^="parfum"]:checked'))
-            .map(cb => cb.value);
-        if (selectedConcentrations.length > 0) {
-            if (!selectedConcentrations.includes(product.concentration)) {
+        });
+        console.log('Filtered products after brand filter:', filteredProducts.length);
+    }
+    
+    // Price filters
+    const selectedPrices = Array.from(document.querySelectorAll('input[id^="price"]:checked'))
+        .map(cb => cb.value);
+    if (selectedPrices.length > 0) {
+        filteredProducts = filteredProducts.filter(product => {
+            return selectedPrices.some(range => {
+                if (range === '0-2000') return product.price <= 2000;
+                if (range === '2000-5000') return product.price > 2000 && product.price <= 5000;
+                if (range === '5000-10000') return product.price > 5000 && product.price <= 10000;
+                if (range === '10000+') return product.price > 10000;
                 return false;
-            }
-        }
-        
-        return true;
+            });
+        });
+    }
+    
+    // Concentration filters
+    const selectedConcentrations = Array.from(document.querySelectorAll('input[id="edp"]:checked, input[id="edt"]:checked, input[id="parfum"]:checked'))
+        .map(cb => cb.value);
+    if (selectedConcentrations.length > 0) {
+        filteredProducts = filteredProducts.filter(product => 
+            selectedConcentrations.includes(product.concentration)
+        );
+    }
+    
+    renderProducts();
+    updateResultsCount();
+}
+
+// Clear all filters
+function clearAllFilters() {
+    // Reset search
+    const searchInput = document.getElementById('searchFilter');
+    if (searchInput) searchInput.value = '';
+    
+    // Reset gender to "todos"
+    const todosRadio = document.getElementById('todos');
+    if (todosRadio) todosRadio.checked = true;
+    
+    // Reset all checkboxes
+    document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+        cb.checked = false;
     });
     
-    currentPage = 1; // Reset to first page
-    applySorting();
-    displayProducts();
-    updateResultsCount();
-    generatePagination();
+    // Reset sort
+    const sortSelect = document.getElementById('sortBy');
+    if (sortSelect) sortSelect.value = 'default';
+    
+    // Apply filters (which will now show all products)
+    applyFilters();
 }
 
-// Apply sorting
-function applySorting() {
-    const sortBy = document.getElementById('sortBy')?.value || 'default';
-    
+// Initialize sorting functionality
+function initializeSorting() {
+    const sortSelect = document.getElementById('sortBy');
+    if (sortSelect) {
+        sortSelect.addEventListener('change', function() {
+            sortProducts(this.value);
+        });
+    }
+}
+
+// Sort products
+function sortProducts(sortBy) {
     switch (sortBy) {
         case 'price-low':
             filteredProducts.sort((a, b) => a.price - b.price);
@@ -208,327 +286,285 @@ function applySorting() {
         case 'brand':
             filteredProducts.sort((a, b) => a.brand.localeCompare(b.brand));
             break;
+        case 'newest':
+            filteredProducts.sort((a, b) => b.new - a.new);
+            break;
+        case 'rating':
+            filteredProducts.sort((a, b) => b.rating - a.rating);
+            break;
         default:
-            // Default order (by ID)
-            filteredProducts.sort((a, b) => a.id - b.id);
+            // Default sorting (featured first, then by ID)
+            filteredProducts.sort((a, b) => {
+                if (a.featured && !b.featured) return -1;
+                if (!a.featured && b.featured) return 1;
+                return a.id - b.id;
+            });
     }
     
-    displayProducts();
+    renderProducts();
 }
 
-// Display products with pagination
-function displayProducts() {
-    const productsGrid = document.getElementById('productsGrid');
-    const loadingMessage = document.getElementById('loadingMessage');
+// Initialize view toggle (grid/list)
+function initializeViewToggle() {
+    document.querySelectorAll('[data-view]').forEach(button => {
+        button.addEventListener('click', function() {
+            const view = this.getAttribute('data-view');
+            
+            // Update active button
+            document.querySelectorAll('[data-view]').forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Apply view
+            const grid = document.getElementById('productsGrid');
+            if (view === 'list') {
+                grid.classList.add('list-view');
+            } else {
+                grid.classList.remove('list-view');
+            }
+        });
+    });
+}
+
+// Render products
+function renderProducts() {
+    console.log('renderProducts called with:', filteredProducts.length, 'products');
+    const grid = document.getElementById('productsGrid') || document.getElementById('productos-container');
     const noResults = document.getElementById('noResults');
+    const loadingMessage = document.getElementById('loadingMessage');
     
-    if (!productsGrid) return;
+    console.log('Grid element found:', !!grid);
+    if (!grid) {
+        console.error('No grid element found!');
+        return;
+    }
     
-    // Hide loading and no results
-    if (loadingMessage) loadingMessage.style.display = 'none';
-    if (noResults) noResults.classList.add('d-none');
+    // Hide loading message
+    if (loadingMessage) {
+        loadingMessage.style.display = 'none';
+    }
     
-    // Calculate pagination
-    const startIndex = (currentPage - 1) * productsPerPage;
-    const endIndex = startIndex + productsPerPage;
-    const paginatedProducts = filteredProducts.slice(startIndex, endIndex);
-    
-    if (paginatedProducts.length === 0) {
-        productsGrid.innerHTML = '';
+    if (filteredProducts.length === 0) {
+        grid.innerHTML = `
+            <div class="col-12 text-center py-5">
+                <i class="fas fa-search fa-3x text-muted mb-3"></i>
+                <h4>No se encontraron productos</h4>
+                <p class="text-muted">Intenta ajustar los filtros de búsqueda</p>
+            </div>
+        `;
         if (noResults) noResults.classList.remove('d-none');
         return;
     }
     
-    // Generate product cards
-    productsGrid.innerHTML = paginatedProducts.map(product => `
-        <div class="col-lg-4 col-md-6 col-sm-6" data-aos="fade-up">
-            <div class="card product-card h-100 border-0 shadow-sm">
-                <div class="position-relative overflow-hidden">
-                    <img src="${product.image}" 
-                         class="card-img-top" 
-                         alt="${product.name}"
-                         style="height: 300px; object-fit: cover;"
-                         onerror="this.src='../images/perfumes/default.jpg'">
-                    <div class="position-absolute top-0 end-0 m-2">
-                        <span class="badge bg-primary">${product.ml}ml</span>
+    if (noResults) noResults.classList.add('d-none');
+    
+    const html = filteredProducts.map((product, index) => `
+        <div class="col-lg-4 col-md-6 product-item" data-category="${product.category}" data-brand="${product.brand.toLowerCase().replace(/ /g, '-')}" data-price="${product.price}" data-concentration="${product.concentration}">
+            <div class="product-card" data-aos="fade-up" data-aos-delay="${Math.min(index * 100, 500)}">
+                <div class="product-image">
+                    <img src="${product.image}" alt="${product.name}" class="img-fluid" onerror="handleImageError(this)" loading="lazy">
+                    <div class="product-badges">
+                        ${product.featured ? '<span class="badge badge-featured">Destacado</span>' : ''}
+                        ${product.new ? '<span class="badge badge-new">Nuevo</span>' : ''}
+                        ${product.sale ? '<span class="badge badge-sale">' + calculateDiscount(product.price, product.originalPrice) + '</span>' : ''}
                     </div>
-                    <div class="overlay">
-                        <button class="btn btn-outline-light btn-sm" onclick="quickView(${product.id})">
-                            <i class="fas fa-eye"></i> Vista Rápida
+                    <div class="product-actions">
+                        <button class="btn btn-wishlist" title="Agregar a favoritos" onclick="toggleWishlist(${product.id})">
+                            <i class="fas fa-heart"></i>
+                        </button>
+                        <button class="btn btn-quickview" title="Vista rápida" onclick="showQuickView(${product.id})" data-bs-toggle="modal" data-bs-target="#quickViewModal">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn btn-compare" title="Comparar">
+                            <i class="fas fa-balance-scale"></i>
                         </button>
                     </div>
                 </div>
-                <div class="card-body d-flex flex-column">
-                    <h6 class="card-brand text-muted text-uppercase mb-1">${product.brand}</h6>
-                    <h5 class="card-title mb-2">${product.name}</h5>
-                    <p class="card-text text-muted small flex-grow-1">${product.description}</p>
-                    <div class="mt-auto">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                            <span class="h5 text-primary mb-0">$${product.price.toLocaleString()} MXN</span>
-                            <div class="rating">
-                                ${'<i class="fas fa-star text-warning"></i>'.repeat(5)}
-                            </div>
+                <div class="product-info">
+                    <div class="product-brand">${product.brand}</div>
+                    <h5 class="product-name">${product.name}</h5>
+                    <div class="product-rating">
+                        <div class="stars">
+                            ${generateStars(product.rating)}
                         </div>
-                        <div class="d-grid">
-                            <button class="btn btn-primary add-to-cart" data-id="${product.id}">
-                                <i class="fas fa-shopping-bag me-2"></i>Agregar al Carrito
-                            </button>
-                        </div>
+                        <span class="rating-text">(${product.rating}) ${product.reviews} reseñas</span>
+                    </div>
+                    <div class="product-details">
+                        <small class="text-muted">${formatConcentration(product.concentration)} • ${product.ml}ml</small>
+                    </div>
+                    <div class="product-price">
+                        <span class="price-current">$${product.price.toLocaleString('es-MX', { minimumFractionDigits: 2 })} MXN</span>
+                        ${product.originalPrice ? `<span class="price-original">$${product.originalPrice.toLocaleString('es-MX', { minimumFractionDigits: 2 })} MXN</span>` : ''}
+                        ${product.sale ? `<span class="price-discount">${calculateDiscount(product.price, product.originalPrice)}</span>` : ''}
+                    </div>
+                    <p class="product-notes">${product.description}</p>
+                    <div class="product-actions-bottom">
+                        <button class="add-to-cart btn w-100" data-id="${product.id}" onclick="agregarAlCarrito(${product.id})">
+                            <i class="fas fa-shopping-bag me-2"></i>Agregar al Carrito
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
     `).join('');
     
-    // Add event listeners to new buttons
-    document.querySelectorAll('.add-to-cart').forEach(button => {
-        button.addEventListener('click', function() {
-            const productId = parseInt(this.getAttribute('data-id'));
-            addToCart(productId);
-        });
-    });
+    grid.innerHTML = html;
     
-    generatePagination();
+    // Re-trigger AOS animations
+    if (typeof AOS !== 'undefined') {
+        AOS.refresh();
+    }
 }
 
-// Generate pagination
-function generatePagination() {
-    const paginationContainer = document.getElementById('pagination-container');
-    if (!paginationContainer) return;
+// Helper function for random concentration
+function getRandomConcentration() {
+    const concentrations = ['eau-de-parfum', 'eau-de-toilette', 'parfum'];
+    return concentrations[Math.floor(Math.random() * concentrations.length)];
+}
+
+// Helper functions
+function generateStars(rating) {
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 !== 0;
+    let stars = '';
     
-    const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
-    
-    if (totalPages <= 1) {
-        paginationContainer.innerHTML = '';
-        return;
+    for (let i = 0; i < fullStars; i++) {
+        stars += '<i class="fas fa-star"></i>';
     }
     
-    let paginationHTML = '<nav aria-label="Navegación de productos"><ul class="pagination justify-content-center">';
-    
-    // Previous button
-    paginationHTML += `
-        <li class="page-item ${currentPage === 1 ? 'disabled' : ''}">
-            <a class="page-link" href="#" onclick="changePage(${currentPage - 1}); return false;">
-                <i class="fas fa-chevron-left"></i> Anterior
-            </a>
-        </li>
-    `;
-    
-    // Page numbers
-    for (let i = 1; i <= totalPages; i++) {
-        if (i === 1 || i === totalPages || (i >= currentPage - 2 && i <= currentPage + 2)) {
-            paginationHTML += `
-                <li class="page-item ${i === currentPage ? 'active' : ''}">
-                    <a class="page-link" href="#" onclick="changePage(${i}); return false;">${i}</a>
-                </li>
-            `;
-        } else if (i === currentPage - 3 || i === currentPage + 3) {
-            paginationHTML += '<li class="page-item disabled"><span class="page-link">...</span></li>';
-        }
+    if (hasHalfStar) {
+        stars += '<i class="fas fa-star-half-alt"></i>';
     }
     
-    // Next button
-    paginationHTML += `
-        <li class="page-item ${currentPage === totalPages ? 'disabled' : ''}">
-            <a class="page-link" href="#" onclick="changePage(${currentPage + 1}); return false;">
-                Siguiente <i class="fas fa-chevron-right"></i>
-            </a>
-        </li>
-    `;
+    const emptyStars = 5 - fullStars - (hasHalfStar ? 1 : 0);
+    for (let i = 0; i < emptyStars; i++) {
+        stars += '<i class="far fa-star"></i>';
+    }
     
-    paginationHTML += '</ul></nav>';
-    
-    // Add page info
-    const startItem = ((currentPage - 1) * productsPerPage) + 1;
-    const endItem = Math.min(currentPage * productsPerPage, filteredProducts.length);
-    
-    paginationHTML += `
-        <div class="text-center mt-3">
-            <small class="text-muted">
-                Mostrando ${startItem}-${endItem} de ${filteredProducts.length} productos
-                ${filteredProducts.length !== allProducts.length ? `(${allProducts.length} total)` : ''}
-            </small>
-        </div>
-    `;
-    
-    paginationContainer.innerHTML = paginationHTML;
+    return stars;
 }
 
-// Change page function
-function changePage(page) {
-    const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
-    if (page < 1 || page > totalPages) return;
-    
-    currentPage = page;
-    displayProducts();
-    
-    // Scroll to top of products
-    document.getElementById('productsGrid').scrollIntoView({ 
-        behavior: 'smooth', 
-        block: 'start' 
-    });
+function formatConcentration(concentration) {
+    const concentrations = {
+        'eau-de-parfum': 'Eau de Parfum',
+        'eau-de-toilette': 'Eau de Toilette',
+        'parfum': 'Parfum',
+        'eau-de-cologne': 'Eau de Cologne'
+    };
+    return concentrations[concentration] || concentration;
 }
 
-// Update results count
+function calculateDiscount(currentPrice, originalPrice) {
+    if (!originalPrice || originalPrice <= currentPrice) return '';
+    const discount = Math.round(((originalPrice - currentPrice) / originalPrice) * 100);
+    return `-${discount}%`;
+}
+
 function updateResultsCount() {
-    const resultsCount = document.getElementById('resultsCount');
-    if (resultsCount) {
-        resultsCount.textContent = filteredProducts.length;
+    const countElement = document.getElementById('resultsCount');
+    if (countElement) {
+        countElement.textContent = filteredProducts.length;
     }
 }
 
-// Clear all filters
-function clearAllFilters() {
-    // Clear search
-    const searchInput = document.getElementById('searchFilter');
-    if (searchInput) searchInput.value = '';
-    
-    // Reset gender to "todos"
-    const todosRadio = document.getElementById('todos');
-    if (todosRadio) todosRadio.checked = true;
-    
-    // Uncheck all brand filters
-    document.querySelectorAll('.brand-filters input[type="checkbox"]').forEach(cb => cb.checked = false);
-    
-    // Uncheck all price filters
-    document.querySelectorAll('input[id^="price"]').forEach(cb => cb.checked = false);
-    
-    // Uncheck all concentration filters
-    document.querySelectorAll('input[id^="edp"], input[id^="edt"], input[id^="parfum"]').forEach(cb => cb.checked = false);
-    
-    // Reset sort
-    const sortSelect = document.getElementById('sortBy');
-    if (sortSelect) sortSelect.value = 'default';
-    
-    // Apply filters (which will show all products)
-    applyFilters();
-}
-
-// Add to cart function
-function addToCart(productId) {
+// Función para compatibilidad con products.js
+function agregarAlCarrito(productId) {
+    // Buscar el producto en allProducts
     const product = allProducts.find(p => p.id === productId);
     if (!product) return;
     
-    // Get cart from localStorage
-    let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+    // Convertir formato para compatibilidad
+    const productoCompatible = {
+        id: product.id,
+        nombre: product.name,
+        marca: product.brand,
+        precio: product.price,
+        imagen: product.image,
+        categoria: product.category,
+        descripcion: product.description,
+        ml: product.ml,
+        stock: Math.floor(Math.random() * 50) + 10
+    };
     
-    // Check if product already in cart
-    const existingItem = cart.find(item => item.id === productId);
-    if (existingItem) {
-        existingItem.quantity += 1;
+    // Usar la función de cart.js si está disponible
+    if (typeof window.agregarAlCarrito === 'function') {
+        window.agregarAlCarrito(productId);
     } else {
-        cart.push({
-            id: product.id,
-            name: product.name,
-            brand: product.brand,
-            price: product.price,
-            image: product.image,
-            ml: product.ml,
-            quantity: 1
-        });
+        // Implementación básica de carrito
+        let carrito = JSON.parse(localStorage.getItem('carrito')) || [];
+        const itemExistente = carrito.find(item => item.id === productId);
+        
+        if (itemExistente) {
+            itemExistente.cantidad++;
+        } else {
+            carrito.push({
+                ...productoCompatible,
+                cantidad: 1
+            });
+        }
+        
+        localStorage.setItem('carrito', JSON.stringify(carrito));
+        
+        // Mostrar notificación
+        mostrarNotificacion(`${product.name} agregado al carrito`);
+        
+        // Actualizar contador si existe la función
+        if (typeof actualizarContadorCarrito === 'function') {
+            actualizarContadorCarrito();
+        }
     }
-    
-    localStorage.setItem('cart', JSON.stringify(cart));
-    
-    // Update cart UI if function exists
-    if (typeof updateCartUI === 'function') {
-        updateCartUI();
-    }
-    
-    // Show success message
-    showAddToCartMessage(product.name);
 }
 
-// Show add to cart message
-function showAddToCartMessage(productName) {
-    // Create toast or alert
-    const toast = document.createElement('div');
-    toast.className = 'toast-message';
-    toast.innerHTML = `
-        <div class="alert alert-success alert-dismissible fade show position-fixed" 
-             style="top: 20px; right: 20px; z-index: 9999;">
-            <strong>¡Agregado!</strong> ${productName} se agregó al carrito.
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
+// Función para mostrar notificaciones
+function mostrarNotificacion(mensaje) {
+    // Crear elemento de notificación
+    const notificacion = document.createElement('div');
+    notificacion.className = 'alert alert-success position-fixed';
+    notificacion.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
+    notificacion.innerHTML = `
+        <i class="fas fa-check-circle"></i> ${mensaje}
+        <button type="button" class="btn-close float-end" onclick="this.parentElement.remove()"></button>
     `;
     
-    document.body.appendChild(toast);
+    document.body.appendChild(notificacion);
     
-    // Auto remove after 3 seconds
+    // Remover después de 3 segundos
     setTimeout(() => {
-        toast.remove();
+        if (notificacion.parentElement) {
+            notificacion.remove();
+        }
     }, 3000);
 }
 
-// Quick view function
-function quickView(productId) {
+// Quick view functionality
+function showQuickView(productId) {
     const product = allProducts.find(p => p.id === productId);
     if (!product) return;
     
     // Update modal content
     const modal = document.getElementById('quickViewModal');
     if (modal) {
-        const modalBody = modal.querySelector('.modal-body');
-        modalBody.innerHTML = `
-            <div class="row">
-                <div class="col-md-6">
-                    <img src="${product.image}" alt="${product.name}" class="img-fluid rounded"
-                         onerror="this.src='../images/perfumes/default.jpg'">
-                </div>
-                <div class="col-md-6">
-                    <h4>${product.name}</h4>
-                    <h6 class="text-muted mb-3">${product.brand}</h6>
-                    <div class="rating mb-3">
-                        ${'<i class="fas fa-star text-warning"></i>'.repeat(5)}
-                        <span class="ms-2">(Excelente calidad)</span>
-                    </div>
-                    <p class="h4 text-primary mb-3">$${product.price.toLocaleString()} MXN</p>
-                    <p class="mb-3">${product.description}</p>
-                    <div class="mb-3">
-                        <strong>Detalles:</strong>
-                        <ul class="list-unstyled mt-2">
-                            <li><strong>Marca:</strong> ${product.brand}</li>
-                            <li><strong>Concentración:</strong> ${product.concentration}</li>
-                            <li><strong>Contenido:</strong> ${product.ml}ml</li>
-                            <li><strong>Género:</strong> ${product.category}</li>
-                        </ul>
-                    </div>
-                    <div class="d-grid gap-2">
-                        <button class="btn btn-primary btn-lg" onclick="addToCart(${product.id}); bootstrap.Modal.getInstance(document.getElementById('quickViewModal')).hide();">
-                            <i class="fas fa-shopping-bag me-2"></i>Agregar al Carrito
-                        </button>
-                    </div>
-                </div>
-            </div>
-        `;
+        modal.querySelector('img').src = product.image;
+        modal.querySelector('h4').textContent = `${product.brand} ${product.name}`;
+        modal.querySelector('.h4.text-primary').textContent = `$${product.price.toLocaleString('es-MX', { minimumFractionDigits: 2 })} MXN`;
+        modal.querySelector('p').textContent = product.description;
         
-        const modalInstance = new bootstrap.Modal(modal);
-        modalInstance.show();
+        // Update details
+        const details = modal.querySelectorAll('li');
+        if (details.length >= 4) {
+            details[0].innerHTML = `<strong>Marca:</strong> ${product.brand}`;
+            details[1].innerHTML = `<strong>Concentración:</strong> ${formatConcentration(product.concentration)}`;
+            details[2].innerHTML = `<strong>Contenido:</strong> ${product.ml}ml`;
+            details[3].innerHTML = `<strong>Género:</strong> ${product.category.charAt(0).toUpperCase() + product.category.slice(1)}`;
+        }
+        
+        // Update buttons
+        modal.querySelectorAll('[data-id]').forEach(btn => {
+            btn.setAttribute('data-id', productId);
+        });
     }
 }
 
-// Show error state
-function showErrorState() {
-    const productsGrid = document.getElementById('productsGrid');
-    const loadingMessage = document.getElementById('loadingMessage');
-    
-    if (loadingMessage) loadingMessage.style.display = 'none';
-    
-    if (productsGrid) {
-        productsGrid.innerHTML = `
-            <div class="col-12 text-center py-5">
-                <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
-                <h4 class="text-muted">Error al cargar productos</h4>
-                <p class="text-muted">Por favor, recarga la página para intentar nuevamente.</p>
-                <button class="btn btn-primary" onclick="location.reload()">
-                    <i class="fas fa-redo me-2"></i>Recargar Página
-                </button>
-            </div>
-        `;
-    }
-}
-
-// Utility function for debouncing
+// Debounce function for search
 function debounce(func, wait) {
     let timeout;
     return function executedFunction(...args) {
@@ -541,7 +577,269 @@ function debounce(func, wait) {
     };
 }
 
-// Make functions global for HTML onclick handlers
-window.changePage = changePage;
-window.quickView = quickView;
-window.addToCart = addToCart;
+// Export for global access
+window.perfumesPage = {
+    applyFilters,
+    sortProducts,
+    showQuickView,
+    clearAllFilters
+};
+
+// Helper function to get concentration from product name
+function getConcentrationFromName(name) {
+    if (name.toLowerCase().includes('parfum') || name.toLowerCase().includes('edp')) {
+        return 'eau-de-parfum';
+    } else if (name.toLowerCase().includes('toilette') || name.toLowerCase().includes('edt')) {
+        return 'eau-de-toilette';
+    } else if (name.toLowerCase().includes('cologne')) {
+        return 'eau-de-cologne';
+    } else {
+        // Random assignment for products without clear indication
+        const concentrations = ['eau-de-parfum', 'eau-de-toilette', 'parfum'];
+        return concentrations[Math.floor(Math.random() * concentrations.length)];
+    }
+}
+
+// Format concentration for display
+function formatConcentration(concentration) {
+    const concentrationMap = {
+        'eau-de-parfum': 'EDP',
+        'eau-de-toilette': 'EDT',
+        'parfum': 'Parfum',
+        'eau-de-cologne': 'EDC'
+    };
+    return concentrationMap[concentration] || 'EDP';
+}
+
+// Generate star rating HTML
+function generateStars(rating) {
+    const fullStars = Math.floor(rating);
+    const hasHalfStar = rating % 1 !== 0;
+    let starsHTML = '';
+    
+    for (let i = 0; i < fullStars; i++) {
+        starsHTML += '<i class="fas fa-star"></i>';
+    }
+    
+    if (hasHalfStar) {
+        starsHTML += '<i class="fas fa-star-half-alt"></i>';
+    }
+    
+    const emptyStars = 5 - Math.ceil(rating);
+    for (let i = 0; i < emptyStars; i++) {
+        starsHTML += '<i class="far fa-star"></i>';
+    }
+    
+    return starsHTML;
+}
+
+// Calculate discount percentage
+function calculateDiscount(currentPrice, originalPrice) {
+    if (!originalPrice || originalPrice <= currentPrice) return '';
+    const discount = Math.round(((originalPrice - currentPrice) / originalPrice) * 100);
+    return `-${discount}%`;
+}
+
+// Wishlist functionality
+function toggleWishlist(productId) {
+    const wishlist = JSON.parse(localStorage.getItem('perfume_wishlist') || '[]');
+    const index = wishlist.indexOf(productId);
+    
+    if (index > -1) {
+        wishlist.splice(index, 1);
+        showNotification('Producto eliminado de favoritos', 'info');
+    } else {
+        wishlist.push(productId);
+        showNotification('Producto agregado a favoritos', 'success');
+    }
+    
+    localStorage.setItem('perfume_wishlist', JSON.stringify(wishlist));
+    updateWishlistUI();
+}
+
+// Update wishlist UI indicators
+function updateWishlistUI() {
+    const wishlist = JSON.parse(localStorage.getItem('perfume_wishlist') || '[]');
+    document.querySelectorAll('.btn-wishlist').forEach(btn => {
+        const productId = parseInt(btn.getAttribute('onclick').match(/\d+/)[0]);
+        if (wishlist.includes(productId)) {
+            btn.classList.add('active');
+            btn.innerHTML = '<i class="fas fa-heart text-danger"></i>';
+        } else {
+            btn.classList.remove('active');
+            btn.innerHTML = '<i class="fas fa-heart"></i>';
+        }
+    });
+}
+
+// Show quick view modal
+function showQuickView(productId) {
+    const product = allProducts.find(p => p.id === productId);
+    if (!product) return;
+    
+    const modal = document.getElementById('quickViewModal');
+    if (modal) {
+        // Update modal content with product data
+        modal.querySelector('.modal-title').textContent = product.name;
+        modal.querySelector('img').src = product.image;
+        modal.querySelector('h4').textContent = product.name;
+        modal.querySelector('.h4.text-primary').textContent = `$${product.price.toLocaleString('es-MX', { minimumFractionDigits: 2 })} MXN`;
+        modal.querySelector('p').textContent = product.description;
+        
+        // Update product details
+        const detailsList = modal.querySelector('.list-unstyled');
+        if (detailsList) {
+            detailsList.innerHTML = `
+                <li><strong>Marca:</strong> ${product.brand}</li>
+                <li><strong>Concentración:</strong> ${formatConcentration(product.concentration)}</li>
+                <li><strong>Contenido:</strong> ${product.ml}ml</li>
+                <li><strong>Género:</strong> ${product.category.charAt(0).toUpperCase() + product.category.slice(1)}</li>
+                <li><strong>Stock:</strong> ${product.stock > 0 ? `${product.stock} disponibles` : 'Sin stock'}</li>
+            `;
+        }
+        
+        // Update add to cart button
+        const addToCartBtn = modal.querySelector('[data-id]');
+        if (addToCartBtn) {
+            addToCartBtn.setAttribute('data-id', product.id);
+            addToCartBtn.onclick = () => quickAddToCart(product.id, addToCartBtn);
+        }
+    }
+}
+
+// Global function to add to cart (compatible with existing cart system)
+function agregarAlCarrito(productId) {
+    if (typeof cart !== 'undefined') {
+        cart.addItem(productId);
+    } else {
+        console.error('Cart system not loaded');
+        showNotification('Error al agregar al carrito', 'error');
+    }
+}
+
+// Show notification
+function showNotification(message, type = 'info') {
+    // Remove existing notifications
+    const existing = document.querySelectorAll('.perfume-notification');
+    existing.forEach(n => n.remove());
+
+    const notification = document.createElement('div');
+    notification.className = `alert alert-${type === 'error' ? 'danger' : type === 'success' ? 'success' : 'info'} perfume-notification`;
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+        min-width: 300px;
+        animation: slideInRight 0.3s ease-out;
+    `;
+    
+    notification.innerHTML = `
+        <div class="d-flex justify-content-between align-items-center">
+            <span>${message}</span>
+            <button type="button" class="btn-close" onclick="this.parentElement.parentElement.remove()"></button>
+        </div>
+    `;
+    
+    document.body.appendChild(notification);
+    
+    // Auto remove after 4 seconds
+    setTimeout(() => {
+        if (notification.parentElement) {
+            notification.remove();
+        }
+    }, 4000);
+}
+
+// Initialize search functionality with real-time filtering
+function initializeSearch() {
+    const searchInput = document.getElementById('searchFilter');
+    if (searchInput) {
+        searchInput.addEventListener('input', function(e) {
+            currentFilters.search = e.target.value.toLowerCase();
+            applyFilters();
+        });
+    }
+}
+
+// Apply all active filters
+function applyFilters() {
+    // Get current filter values
+    currentFilters.search = document.getElementById('searchFilter')?.value.toLowerCase() || '';
+    currentFilters.gender = document.querySelector('input[name="genero"]:checked')?.value || 'todos';
+    
+    // Get selected brands
+    currentFilters.brands = Array.from(document.querySelectorAll('.brand-filters input[type="checkbox"]:checked'))
+        .map(cb => cb.value);
+    
+    // Get selected price ranges
+    currentFilters.priceRange = Array.from(document.querySelectorAll('input[id^="price"]:checked'))
+        .map(cb => cb.value);
+    
+    // Get selected concentrations
+    currentFilters.concentration = Array.from(document.querySelectorAll('input[id="edp"]:checked, input[id="edt"]:checked, input[id="parfum"]:checked'))
+        .map(cb => cb.value);
+    
+    // Apply filters
+    filteredProducts = allProducts.filter(product => {
+        // Search filter
+        if (currentFilters.search) {
+            const searchMatch = 
+                product.name.toLowerCase().includes(currentFilters.search) ||
+                product.brand.toLowerCase().includes(currentFilters.search) ||
+                product.description.toLowerCase().includes(currentFilters.search);
+            if (!searchMatch) return false;
+        }
+        
+        // Gender filter
+        if (currentFilters.gender !== 'todos' && product.category !== currentFilters.gender) {
+            return false;
+        }
+        
+        // Brand filter
+        if (currentFilters.brands.length > 0) {
+            const brandMatch = currentFilters.brands.some(brand => 
+                product.brand.toLowerCase().replace(/\s+/g, '-') === brand ||
+                product.brand.toLowerCase().replace(/[^a-z0-9]/g, '-') === brand
+            );
+            if (!brandMatch) return false;
+        }
+        
+        // Price filter
+        if (currentFilters.priceRange.length > 0) {
+            const priceMatch = currentFilters.priceRange.some(range => {
+                const [min, max] = range.split('-');
+                if (max === undefined) {
+                    return product.price >= parseInt(min);
+                }
+                return product.price >= parseInt(min) && product.price <= parseInt(max);
+            });
+            if (!priceMatch) return false;
+        }
+        
+        // Concentration filter
+        if (currentFilters.concentration.length > 0) {
+            if (!currentFilters.concentration.includes(product.concentration)) {
+                return false;
+            }
+        }
+        
+        return true;
+    });
+    
+    renderProducts();
+    updateResultsCount();
+}
+
+// Handle image loading errors
+function handleImageError(img) {
+    console.log('Image failed to load:', img.src);
+    img.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMzAwIiBoZWlnaHQ9IjMwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjhmOWZhIiBzdHJva2U9IiNkZWUyZTYiIHN0cm9rZS13aWR0aD0iMiIvPjx0ZXh0IHg9IjUwJSIgeT0iNDAlIiBmb250LXNpemU9IjE0IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBkeT0iLjNlbSIgZmlsbD0iIzZjNzU3ZCI+PGkgY2xhc3M9ImZhcyBmYS1zcHJheS1jYW4iIHN0eWxlPSJmb250LXNpemU6IDMwcHgiPjwvaT48L3RleHQ+PHRleHQgeD0iNTAlIiB5PSI2NSUiIGZvbnQtc2l6ZT0iMTIiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIiBmaWxsPSIjNmM3NTdkIj5JbWFnZW4gTm8gRGlzcG9uaWJsZTwvdGV4dD48L3N2Zz4=';
+    img.alt = 'Imagen no disponible';
+    img.title = 'La imagen del producto no está disponible';
+}
+
+// Add global access to image error handler
+window.handleImageError = handleImageError;
+
+console.log('🌸 Perfumes page functionality loaded successfully!');
