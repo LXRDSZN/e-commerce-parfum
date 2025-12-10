@@ -351,6 +351,9 @@
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <!-- Load auth system first -->
+    <script src="js/auth.js"></script>
+    <script src="js/notifications.js"></script>
     <script src="js/cart.js"></script>
     <script src="js/products.js"></script>
     <script src="js/main.js"></script>
@@ -365,9 +368,21 @@
                 document.getElementById('preloader').style.display = 'none';
             }, 1000);
             
-            // Update user UI on load
-            if (typeof updateUserUI === 'function') {
-                updateUserUI();
+            // Update user UI on load (using new auth system)
+            console.log('Index.html - DOM loaded, checking auth...');
+            
+            if (typeof authSystem !== 'undefined') {
+                console.log('AuthSystem found, updating UI...');
+                authSystem.updateUserUI();
+                
+                // Debug current user
+                if (authSystem.isLoggedIn()) {
+                    console.log('User is logged in:', authSystem.getCurrentUser());
+                } else {
+                    console.log('No user logged in');
+                }
+            } else {
+                console.error('AuthSystem not found!');
             }
             
             // Ensure "Explorar Catálogo" button works

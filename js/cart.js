@@ -18,15 +18,27 @@ class ShoppingCart {
         this.bindEvents();
     }
 
-    // Load cart from localStorage
+    // Load cart from localStorage (user-specific)
     loadFromStorage() {
-        const saved = localStorage.getItem('perfume_cart');
-        return saved ? JSON.parse(saved) : [];
+        if (typeof authSystem !== 'undefined' && authSystem.isLoggedIn()) {
+            // Load user-specific cart
+            return authSystem.getUserCart();
+        } else {
+            // Load guest cart
+            const saved = localStorage.getItem('guest_cart');
+            return saved ? JSON.parse(saved) : [];
+        }
     }
 
-    // Save cart to localStorage
+    // Save cart to localStorage (user-specific)
     saveToStorage() {
-        localStorage.setItem('perfume_cart', JSON.stringify(this.items));
+        if (typeof authSystem !== 'undefined' && authSystem.isLoggedIn()) {
+            // Save user-specific cart
+            authSystem.saveUserCart(this.items);
+        } else {
+            // Save guest cart
+            localStorage.setItem('guest_cart', JSON.stringify(this.items));
+        }
     }
 
     // Add item to cart

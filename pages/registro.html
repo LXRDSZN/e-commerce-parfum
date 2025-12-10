@@ -405,6 +405,7 @@
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/auth.js"></script>
     <script src="../js/main.js"></script>
 
     <script>
@@ -621,21 +622,42 @@
                 submitBtn.querySelector('.btn-text').classList.add('d-none');
                 submitBtn.querySelector('.btn-loading').classList.remove('d-none');
                 
-                // Simulate API call
-                setTimeout(() => {
+                // Get form data
+                const formData = new FormData(form);
+                const userData = {
+                    nombre: formData.get('firstName'),
+                    apellido: formData.get('lastName'),
+                    email: formData.get('email'),
+                    password: formData.get('password'),
+                    telefono: formData.get('phone'),
+                    direccion: formData.get('address'),
+                    ciudad: formData.get('city'),
+                    codigo_postal: formData.get('zipCode'),
+                    pais: 'México',
+                    fecha_nacimiento: formData.get('birthDate'),
+                    genero: formData.get('gender')
+                };
+                
+                // Register user using auth system
+                setTimeout(async () => {
+                    const result = await authSystem.register(userData);
+                    
                     // Hide loading
                     submitBtn.disabled = false;
                     submitBtn.querySelector('.btn-text').classList.remove('d-none');
                     submitBtn.querySelector('.btn-loading').classList.add('d-none');
                     
-                    // Show success message
-                    showAlert('¡Cuenta creada exitosamente! Redirigiendo...', 'success');
-                    
-                    // Simulate account creation and redirect
-                    setTimeout(() => {
-                        window.location.href = 'login.html?registered=true';
-                    }, 2000);
-                }, 2000);
+                    if (result.success) {
+                        showAlert('¡Cuenta creada exitosamente! Redirigiendo...', 'success');
+                        
+                        // Redirect to login
+                        setTimeout(() => {
+                            window.location.href = 'login.html?registered=true';
+                        }, 2000);
+                    } else {
+                        showAlert('Error: ' + result.error, 'danger');
+                    }
+                }, 1500);
             }
             
             function showAlert(message, type) {

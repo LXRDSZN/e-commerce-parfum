@@ -738,8 +738,8 @@ function handleLogin(e) {
         
         showNotification(`¡Bienvenido ${user.firstName}!`, 'success');
         
-        // Update UI
-        updateUserUI();
+        // Update UI - now handled by authSystem
+        // updateUserUI();
         
         // If user is admin, show admin options
         if (user.role === 'admin') {
@@ -795,9 +795,11 @@ function handleRegister(e) {
     modal.hide();
     
     showNotification(`¡Cuenta creada exitosamente! Bienvenido ${firstName}`, 'success');
-    updateUserUI();
+    // updateUserUI(); // now handled by authSystem
 }
 
+// OLD updateUserUI function - DISABLED - Now using authSystem.updateUserUI()
+/*
 function updateUserUI() {
     const currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
     
@@ -828,11 +830,20 @@ function updateUserUI() {
         }
     }
 }
+*/
 
 function logout() {
-    localStorage.removeItem('currentUser');
+    // Use new auth system if available
+    if (typeof authSystem !== 'undefined') {
+        authSystem.logout();
+    } else {
+        // Fallback to old method
+        localStorage.removeItem('currentUser');
+        sessionStorage.removeItem('currentUser');
+    }
+    
     showNotification('Sesión cerrada correctamente', 'info');
-    updateUserUI();
+    // updateUserUI(); // now handled by authSystem
     
     // Redirect if on admin page
     if (window.location.pathname.includes('admin')) {
