@@ -76,19 +76,23 @@
                         <i class="fas fa-sync-alt me-2"></i>Actualizar
                     </button>
                     
-                    <div class="dropdown" style="z-index: 9999;">
-                        <button class="btn btn-link text-dark dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">
+                    <div class="dropdown">
+                        <button class="btn btn-link text-dark dropdown-toggle d-flex align-items-center" 
+                                type="button" 
+                                id="dropdownMenuButton" 
+                                data-bs-toggle="dropdown" 
+                                aria-expanded="false">
                             <i class="fas fa-user-circle fs-4 me-2"></i>
                             <div class="text-start">
                                 <div class="fw-bold" id="adminUserName">Administrador</div>
                                 <small class="text-muted">Admin</small>
                             </div>
                         </button>
-                        <ul class="dropdown-menu dropdown-menu-end" style="z-index: 9999;">
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
                             <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Perfil</a></li>
                             <li><a class="dropdown-item" href="#"><i class="fas fa-cogs me-2"></i>Configuración</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item text-danger" href="#" onclick="logout()">
+                            <li><a class="dropdown-item text-danger" href="#" onclick="logout(); return false;">
                                 <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión</a></li>
                         </ul>
                     </div>
@@ -265,13 +269,6 @@
         </div>
     </div>
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Este código será reemplazado por el script principal más abajo -->
-
-    <!-- Este modal está duplicado - se usará el que está arriba -->
-
     <!-- Delete Confirmation Modal -->
     <div class="modal fade" id="deleteModal" tabindex="-1">
         <div class="modal-dialog">
@@ -297,7 +294,6 @@
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="../js/admin-products.js"></script>
     <script>
         let currentProducts = [];
         let filteredProducts = [];
@@ -310,6 +306,22 @@
             loadProducts();
             setupFilters();
             setupImagePreview();
+            
+            // Wait for Bootstrap to be loaded
+            const waitForBootstrap = () => {
+                if (typeof bootstrap !== 'undefined' && bootstrap.Dropdown) {
+                    initializeDropdowns();
+                } else {
+                    setTimeout(waitForBootstrap, 100);
+                }
+            };
+            
+            waitForBootstrap();
+            
+            // Re-initialize on window load as backup
+            window.addEventListener('load', () => {
+                setTimeout(initializeDropdowns, 200);
+            });
         });
 
         function checkAdminAuth() {
@@ -320,28 +332,67 @@
                 window.location.href = '../pages/login.html';
                 return;
             }
+
+            // Update admin name in header
+            const adminName = currentUser.nombre ? `${currentUser.nombre} ${currentUser.apellido || ''}`.trim() : 'Administrador';
+            document.getElementById('adminUserName').textContent = adminName;
         }
 
         function loadProducts() {
+            console.log('🔄 Cargando productos...');
+            
             // Try to load from localStorage first (for added products)
             let storedProducts = JSON.parse(localStorage.getItem('adminProducts') || '[]');
             
             // Load initial products from JSON file
             fetch('../data/perfumes.json')
-                .then(response => response.json())
-                .then(products => {
+                .then(response => {
+                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('✅ JSON cargado:', data);
+                    
+                    // Handle both formats: {perfumes: [...]} or [...]
+                    let products = data.perfumes || data;
+                    if (!Array.isArray(products)) {
+                        console.error('❌ Formato de datos incorrecto');
+                        products = [];
+                    }
+
+                    // Transform data to match expected format
+                    products = products.map(product => ({
+                        id: product.id,
+                        nombre: product.nombre,
+                        marca: product.marca,
+                        categoria: product.categoria?.toUpperCase() || 'GENERAL',
+                        precio: parseFloat(product.precio) || 0,
+                        stock: parseInt(product.stock) || 0,
+                        descripcion: product.descripcion || '',
+                        imagen_url: product.imagen || '../images/placeholder-perfume.jpg',
+                        tamaño: product.ml || product.tamaño || 'N/A',
+                        activo: true
+                    }));
+
                     // Merge stored products with initial products
                     currentProducts = [...products, ...storedProducts];
                     filteredProducts = [...currentProducts];
+                    
+                    console.log('📦 Total productos:', currentProducts.length);
+                    
                     displayProducts();
                     populateFilters();
                 })
                 .catch(error => {
-                    console.error('Error loading products:', error);
+                    console.error('❌ Error loading products:', error);
+                    
+                    // Use only stored products if JSON fails
                     currentProducts = storedProducts;
                     filteredProducts = [...currentProducts];
                     displayProducts();
                     populateFilters();
+                    
+                    showNotification('Error cargando productos del servidor. Mostrando productos locales.', 'warning');
                 });
         }
 
@@ -351,33 +402,40 @@
             const endIndex = startIndex + productsPerPage;
             const productsToShow = filteredProducts.slice(startIndex, endIndex);
 
+            console.log('🎯 Mostrando productos:', productsToShow.length, 'de', filteredProducts.length);
+
             if (productsToShow.length === 0) {
                 container.innerHTML = `
                     <div class="col-12 text-center py-5">
                         <i class="fas fa-search fa-3x text-muted mb-3"></i>
                         <h5 class="text-muted">No se encontraron productos</h5>
                         <p class="text-muted">Intenta cambiar los filtros o agregar nuevos productos</p>
+                        <button class="btn btn-primary mt-3" onclick="clearFilters()">
+                            <i class="fas fa-refresh me-2"></i>Limpiar Filtros
+                        </button>
                     </div>
                 `;
                 return;
             }
 
             container.innerHTML = productsToShow.map(product => `
-                <div class="col-xl-3 col-lg-4 col-md-6">
+                <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
                     <div class="card product-card h-100">
                         <div class="position-relative">
-                            <img src="${product.imagen_url || '../images/placeholder-perfume.jpg'}" 
-                                 class="product-image" alt="${product.nombre}">
+                            <img src="${product.imagen_url}" 
+                                 class="product-image" 
+                                 alt="${product.nombre}"
+                                 onerror="this.src='../images/placeholder-perfume.jpg'">
                             
                             <span class="badge ${getStockBadgeClass(product.stock)} stock-badge">
                                 Stock: ${product.stock}
                             </span>
                             
                             <div class="actions-overlay">
-                                <button class="btn btn-primary btn-sm" onclick="editProduct(${product.id || Date.now()})" title="Editar">
+                                <button class="btn btn-primary btn-sm" onclick="editProduct(${product.id})" title="Editar">
                                     <i class="fas fa-edit"></i>
                                 </button>
-                                <button class="btn btn-danger btn-sm" onclick="deleteProduct(${product.id || Date.now()}, '${product.nombre}')" title="Eliminar">
+                                <button class="btn btn-danger btn-sm" onclick="deleteProduct(${product.id}, '${product.nombre.replace(/'/g, "\\'")')" title="Eliminar">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </div>
@@ -392,12 +450,12 @@
                             <h6 class="card-title fw-bold">${product.nombre}</h6>
                             
                             <p class="card-text small text-muted flex-grow-1">
-                                ${product.descripcion ? product.descripcion.substring(0, 80) + '...' : 'Sin descripción'}
+                                ${product.descripcion ? (product.descripcion.length > 80 ? product.descripcion.substring(0, 80) + '...' : product.descripcion) : 'Sin descripción'}
                             </p>
                             
                             <div class="d-flex justify-content-between align-items-center mt-auto">
-                                <span class="h6 mb-0 text-primary fw-bold">$${product.precio}</span>
-                                <small class="text-muted">${product.tamaño || 'N/A'}</small>
+                                <span class="h6 mb-0 text-primary fw-bold">$${product.precio.toLocaleString()}</span>
+                                <small class="text-muted">${product.tamaño}</small>
                             </div>
                         </div>
                     </div>
@@ -461,7 +519,7 @@
 
         function populateFilters() {
             // Populate brand filter
-            const brands = [...new Set(currentProducts.map(p => p.marca))].sort();
+            const brands = [...new Set(currentProducts.map(p => p.marca))].filter(Boolean).sort();
             const brandFilter = document.getElementById('brandFilter');
             brandFilter.innerHTML = '<option value="">Todas las marcas</option>' +
                 brands.map(brand => `<option value="${brand}">${brand}</option>`).join('');
@@ -474,8 +532,10 @@
             const stockFilter = document.getElementById('stockFilter');
 
             [searchInput, categoryFilter, brandFilter, stockFilter].forEach(element => {
-                element.addEventListener('change', applyFilters);
-                element.addEventListener('keyup', applyFilters);
+                if (element) {
+                    element.addEventListener('change', applyFilters);
+                    element.addEventListener('keyup', applyFilters);
+                }
             });
         }
 
@@ -518,20 +578,25 @@
         }
 
         function setupImagePreview() {
-            document.getElementById('productImage').addEventListener('change', function(e) {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const preview = document.getElementById('imagePreview');
-                        const container = document.getElementById('imagePreviewContainer');
-                        
-                        preview.src = e.target.result;
-                        container.style.display = 'block';
-                    };
-                    reader.readAsDataURL(file);
-                }
-            });
+            const imageInput = document.getElementById('productImage');
+            if (imageInput) {
+                imageInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const preview = document.getElementById('imagePreview');
+                            const container = document.getElementById('imagePreviewContainer');
+                            
+                            if (preview && container) {
+                                preview.src = e.target.result;
+                                container.style.display = 'block';
+                            }
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
         }
 
         function removeImage() {
@@ -543,12 +608,16 @@
             document.getElementById('productModalTitle').textContent = 'Agregar Perfume';
             document.getElementById('productForm').reset();
             document.getElementById('productId').value = '';
-            document.getElementById('imagePreviewContainer').style.display = 'none';
+            
+            const container = document.getElementById('imagePreviewContainer');
+            if (container) container.style.display = 'none';
         }
 
         function editProduct(productId) {
-            const product = currentProducts.find(p => (p.id || Date.now()) == productId);
+            const product = currentProducts.find(p => p.id == productId);
             if (!product) return;
+
+            console.log('✏️ Editando producto:', product);
 
             document.getElementById('productModalTitle').textContent = 'Editar Perfume';
             document.getElementById('productId').value = productId;
@@ -559,12 +628,19 @@
             document.getElementById('productStock').value = product.stock;
             document.getElementById('productCategory').value = product.categoria;
             document.getElementById('productSize').value = product.tamaño || '';
-            document.getElementById('productType').value = product.tipo || '';
-            document.getElementById('productNotes').value = product.notas || '';
+            
+            const typeField = document.getElementById('productType');
+            const notesField = document.getElementById('productNotes');
+            if (typeField) typeField.value = product.tipo || '';
+            if (notesField) notesField.value = product.notas || '';
 
             if (product.imagen_url && product.imagen_url !== '../images/placeholder-perfume.jpg') {
-                document.getElementById('imagePreview').src = product.imagen_url;
-                document.getElementById('imagePreviewContainer').style.display = 'block';
+                const preview = document.getElementById('imagePreview');
+                const container = document.getElementById('imagePreviewContainer');
+                if (preview && container) {
+                    preview.src = product.imagen_url;
+                    container.style.display = 'block';
+                }
             }
 
             new bootstrap.Modal(document.getElementById('productModal')).show();
@@ -579,10 +655,10 @@
         function confirmDelete() {
             if (productToDelete) {
                 // Remove from current products
-                currentProducts = currentProducts.filter(p => (p.id || Date.now()) != productToDelete);
+                currentProducts = currentProducts.filter(p => p.id != productToDelete);
                 
-                // Update stored products
-                const storedProducts = currentProducts.filter(p => p.id && p.id > 1000000000000); // Only custom added products
+                // Update stored products (only custom added products)
+                const storedProducts = currentProducts.filter(p => p.id && p.id > 1000000000000);
                 localStorage.setItem('adminProducts', JSON.stringify(storedProducts));
                 
                 // Refresh display
@@ -616,17 +692,19 @@
                 stock: parseInt(document.getElementById('productStock').value),
                 categoria: document.getElementById('productCategory').value,
                 tamaño: document.getElementById('productSize').value,
-                tipo: document.getElementById('productType').value,
-                notas: document.getElementById('productNotes').value,
                 imagen_url: '../images/perfumes/' + (document.getElementById('productImage').files[0]?.name || 'default.jpg'),
-                fecha_creacion: new Date().toISOString(),
-                activo: true,
-                vendidos: 0
+                activo: true
             };
+
+            // Add optional fields if they exist
+            const typeField = document.getElementById('productType');
+            const notesField = document.getElementById('productNotes');
+            if (typeField) productData.tipo = typeField.value;
+            if (notesField) productData.notas = notesField.value;
 
             if (isEditing) {
                 // Update existing product
-                const index = currentProducts.findIndex(p => (p.id || Date.now()) == productId);
+                const index = currentProducts.findIndex(p => p.id == productId);
                 if (index !== -1) {
                     currentProducts[index] = { ...currentProducts[index], ...productData };
                 }
@@ -635,12 +713,13 @@
                 currentProducts.push(productData);
             }
 
-            // Save to localStorage (only custom products)
+            // Save to localStorage (only custom products with high IDs)
             const storedProducts = currentProducts.filter(p => p.id && p.id > 1000000000000);
             localStorage.setItem('adminProducts', JSON.stringify(storedProducts));
 
             // Refresh display
-            applyFilters();
+            filteredProducts = [...currentProducts];
+            displayProducts();
             populateFilters();
 
             // Close modal
@@ -655,8 +734,8 @@
         function showNotification(message, type) {
             const alertHtml = `
                 <div class="alert alert-${type} alert-dismissible fade show position-fixed" 
-                     style="top: 20px; right: 20px; z-index: 9999;">
-                    <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-triangle'} me-2"></i>
+                     style="top: 20px; right: 20px; z-index: 9999; min-width: 300px;">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : type === 'warning' ? 'exclamation-triangle' : 'exclamation-circle'} me-2"></i>
                     ${message}
                     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                 </div>
@@ -665,9 +744,43 @@
             document.body.insertAdjacentHTML('beforeend', alertHtml);
             
             setTimeout(() => {
-                const alert = document.querySelector('.alert');
-                if (alert) alert.remove();
+                const alerts = document.querySelectorAll('.alert');
+                alerts.forEach(alert => alert.remove());
             }, 5000);
+        }
+
+        function initializeDropdowns() {
+            // Force re-initialize all dropdowns
+            const dropdowns = document.querySelectorAll('[data-bs-toggle="dropdown"]');
+            dropdowns.forEach(dropdown => {
+                // Dispose existing instance if exists
+                const existingInstance = bootstrap.Dropdown.getInstance(dropdown);
+                if (existingInstance) {
+                    existingInstance.dispose();
+                }
+                
+                try {
+                    // Create new instance
+                    const newDropdown = new bootstrap.Dropdown(dropdown);
+                    
+                    // Add manual click handler as fallback
+                    dropdown.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const menu = this.nextElementSibling;
+                        if (menu && menu.classList.contains('dropdown-menu')) {
+                            if (menu.classList.contains('show')) {
+                                newDropdown.hide();
+                            } else {
+                                newDropdown.show();
+                            }
+                        }
+                    });
+                    
+                    console.log('✅ Dropdown inicializado correctamente');
+                } catch (error) {
+                    console.error('❌ Error inicializando dropdown:', error);
+                }
+            });
         }
 
         function logout() {
