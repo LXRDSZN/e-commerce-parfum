@@ -3,17 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Administrativo - Élite Perfumería</title>
+    <title>Dashboard Admin - Élite Perfumería</title>
     
-    <!-- Bootstrap CSS -->
+    <!-- Bootstrap 5.3 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- ApexCharts -->
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
     <style>
         :root {
             --admin-primary: #2c3e50;
@@ -23,10 +24,6 @@
             --admin-danger: #e74c3c;
             --admin-light: #ecf0f1;
             --admin-dark: #34495e;
-        }
-
-        * {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
         }
 
         .admin-sidebar {
@@ -40,17 +37,25 @@
             transition: all 0.3s ease;
         }
 
+        .admin-sidebar.collapsed {
+            width: 70px;
+        }
+
         .admin-main-content {
             margin-left: 280px;
             transition: all 0.3s ease;
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            background-color: #f8f9fa;
             min-height: 100vh;
+        }
+
+        .admin-main-content.expanded {
+            margin-left: 70px;
         }
 
         .admin-header {
             background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-            padding: 1.5rem 2rem;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
             border-bottom: 1px solid rgba(0,0,0,0.06);
             backdrop-filter: blur(10px);
         }
@@ -87,9 +92,17 @@
             opacity: 1;
         }
 
-        .stats-card.success { border-left-color: var(--admin-success); }
-        .stats-card.warning { border-left-color: var(--admin-warning); }
-        .stats-card.danger { border-left-color: var(--admin-danger); }
+        .stats-card.success {
+            border-left-color: var(--admin-success);
+        }
+
+        .stats-card.warning {
+            border-left-color: var(--admin-warning);
+        }
+
+        .stats-card.danger {
+            border-left-color: var(--admin-danger);
+        }
 
         .chart-container {
             background: linear-gradient(145deg, #ffffff 0%, #fafbfc 100%);
@@ -107,6 +120,7 @@
             transform: translateY(-2px);
         }
 
+        /* Fixed chart dimensions with modern styling */
         .chart-wrapper {
             position: relative;
             height: 320px;
@@ -114,6 +128,28 @@
             background: rgba(255,255,255,0.6);
             border-radius: 16px;
             padding: 1rem;
+        }
+
+        .pie-chart-wrapper {
+            position: relative;
+            height: 380px;
+            width: 100%;
+            background: rgba(255,255,255,0.6);
+            border-radius: 16px;
+            padding: 1rem;
+        }
+
+        /* Enhanced typography */
+        .chart-container h5 {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .sidebar-nav {
+            padding: 1rem 0;
         }
 
         .sidebar-nav .nav-link {
@@ -126,31 +162,50 @@
 
         .sidebar-nav .nav-link:hover,
         .sidebar-nav .nav-link.active {
-            background-color: rgba(255,255,255,0.1);
             color: white;
+            background-color: rgba(255,255,255,0.1);
             border-left-color: var(--admin-secondary);
         }
 
-        .loading-pulse {
-            animation: pulse 1.5s ease-in-out infinite;
+        .sidebar-nav .nav-link i {
+            width: 20px;
+            text-align: center;
+            margin-right: 0.75rem;
         }
 
-        @keyframes pulse {
-            0% { opacity: 0.6; }
-            50% { opacity: 1; }
-            100% { opacity: 0.6; }
+        .admin-sidebar.collapsed .sidebar-nav .nav-link span {
+            display: none;
         }
 
-        .btn {
-            border-radius: 12px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            border: none;
+        .admin-sidebar.collapsed .sidebar-nav .nav-link {
+            padding: 1rem;
+            text-align: center;
         }
 
-        .btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        .user-dropdown {
+            border-left: 1px solid #eee;
+            padding-left: 1rem;
+        }
+
+        .recent-activity {
+            max-height: 420px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(0,0,0,0.2) transparent;
+        }
+
+        .recent-activity::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .recent-activity::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.05);
+            border-radius: 10px;
+        }
+
+        .recent-activity::-webkit-scrollbar-thumb {
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
         }
 
         .activity-item {
@@ -167,104 +222,153 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
 
-        /* Asegurar que el dropdown del admin esté siempre encima */
-        .dropdown-menu {
-            z-index: 9999 !important;
-            position: absolute !important;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+        .activity-item:last-child {
+            border-bottom: none;
         }
 
-        .admin-header {
-            position: relative;
-            z-index: 1050;
+        /* Loading animations */
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
         }
 
-        .admin-header .dropdown {
-            position: relative;
-            z-index: 99999;
+        .loading-pulse {
+            animation: pulse 1.5s ease-in-out infinite;
         }
 
-        /* Dropdown del admin - Forzar z-index alto */
-        .dropdown-menu {
-            z-index: 99999 !important;
-            position: absolute !important;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
-            transform: translateY(10px) !important;
+        /* Enhanced buttons */
+        .btn {
+            border-radius: 12px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
         }
 
-        /* Asegurar que las cards no interfieran */
-        .stats-card {
-            position: relative;
-            z-index: 1;
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
 
-        .chart-card {
-            position: relative;
-            z-index: 1;
+        .btn-outline-primary:hover {
+            background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+            border-color: transparent;
+        }
+
+        .btn-outline-secondary:hover {
+            background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+            border-color: transparent;
+        }
+
+        /* Stats cards enhanced styling */
+        .stats-card .text-info, .stats-card .text-success, 
+        .stats-card .text-warning, .stats-card .text-danger {
+            font-weight: 700;
+            font-size: 2.2rem;
+            background: linear-gradient(135deg, currentColor 0%, currentColor 100%);
+            -webkit-background-clip: text;
+        }
+
+        /* Icon enhancements */
+        .fas {
+            transition: all 0.3s ease;
+        }
+
+        .stats-card:hover .fas {
+            transform: scale(1.1);
         }
     </style>
 </head>
 <body>
-    <!-- Sidebar -->
+    <!-- Admin Sidebar -->
     <nav class="admin-sidebar" id="adminSidebar">
         <div class="text-center py-4 border-bottom border-light border-opacity-25">
             <i class="fas fa-gem text-white fs-2 mb-2"></i>
-            <h5 class="text-white mb-0">Élite Admin</h5>
+            <h5 class="text-white mb-0 sidebar-title">Élite Admin</h5>
         </div>
         
         <ul class="nav flex-column sidebar-nav">
             <li class="nav-item">
                 <a class="nav-link active" href="dashboard.html">
-                    <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="productos.html">
-                    <i class="fas fa-spray-can me-2"></i>Perfumes
+                    <i class="fas fa-spray-can"></i>
+                    <span>Perfumes</span>
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="usuarios.html">
-                    <i class="fas fa-users me-2"></i>Usuarios
+                    <i class="fas fa-users"></i>
+                    <span>Usuarios</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="pedidos.html">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Pedidos</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="ventas.html">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Reportes</span>
+                </a>
+            </li>
+            <li class="nav-item mt-3 border-top border-light border-opacity-25 pt-3">
+                <a class="nav-link" href="configuracion.html">
+                    <i class="fas fa-cogs"></i>
+                    <span>Configuración</span>
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="../index.html">
-                    <i class="fas fa-store me-2"></i>Ver Tienda
+                    <i class="fas fa-store"></i>
+                    <span>Ver Tienda</span>
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link text-danger" href="#" onclick="logout()">
-                    <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Cerrar Sesión</span>
                 </a>
             </li>
         </ul>
     </nav>
 
     <!-- Main Content -->
-    <main class="admin-main-content">
+    <main class="admin-main-content" id="adminMainContent">
         <!-- Header -->
         <header class="admin-header">
             <div class="d-flex justify-content-between align-items-center">
-                <div>
-                    <h4 class="mb-0 fw-bold">📊 Dashboard Administrativo</h4>
-                    <small class="text-muted">Datos en tiempo real desde PostgreSQL</small>
+                <div class="d-flex align-items-center">
+                    <button class="btn btn-link text-dark p-0 me-3" id="sidebarToggle">
+                        <i class="fas fa-bars fs-5"></i>
+                    </button>
+                    <div>
+                        <h4 class="mb-0">Dashboard</h4>
+                        <small class="text-muted">Panel de administración</small>
+                    </div>
                 </div>
                 
                 <div class="d-flex align-items-center gap-3">
                     <button class="btn btn-outline-primary btn-sm" onclick="refreshDashboard()">
                         <i class="fas fa-sync-alt me-2"></i>Actualizar
                     </button>
-                    
-                    <div class="dropdown" style="z-index: 9999;">
-                        <button class="btn btn-link text-dark dropdown-toggle d-flex align-items-center" data-bs-toggle="dropdown">
+                    <div class="user-dropdown">
+                    <div class="dropdown">
+                        <button class="btn btn-link text-dark dropdown-toggle d-flex align-items-center" 
+                                data-bs-toggle="dropdown">
                             <i class="fas fa-user-circle fs-4 me-2"></i>
                             <div class="text-start">
                                 <div class="fw-bold" id="adminUserName">Administrador</div>
                                 <small class="text-muted">Admin</small>
                             </div>
                         </button>
-                        <ul class="dropdown-menu dropdown-menu-end" style="z-index: 9999;">
+                        <ul class="dropdown-menu dropdown-menu-end">
                             <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Perfil</a></li>
                             <li><a class="dropdown-item" href="#"><i class="fas fa-cogs me-2"></i>Configuración</a></li>
                             <li><hr class="dropdown-divider"></li>
@@ -276,21 +380,21 @@
             </div>
         </header>
 
-        <!-- Content -->
+        <!-- Dashboard Content -->
         <div class="container-fluid p-4">
             <!-- Stats Cards -->
             <div class="row g-4 mb-4">
                 <div class="col-xl-3 col-md-6">
-                    <div class="stats-card">
+                    <div class="stats-card success">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
                                 <p class="text-muted mb-1">Ventas del Mes</p>
-                                <h3 class="fw-bold text-primary mb-0" id="ventasMes">$0</h3>
+                                <h3 class="fw-bold text-success mb-0" id="ventasMes">$0</h3>
                                 <small class="text-success">
-                                    <i class="fas fa-arrow-up me-1"></i>Tiempo real
+                                    <i class="fas fa-arrow-up me-1"></i>+15.3%
                                 </small>
                             </div>
-                            <div class="text-primary">
+                            <div class="text-success">
                                 <i class="fas fa-dollar-sign fa-2x"></i>
                             </div>
                         </div>
@@ -298,16 +402,16 @@
                 </div>
                 
                 <div class="col-xl-3 col-md-6">
-                    <div class="stats-card success">
+                    <div class="stats-card">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
                                 <p class="text-muted mb-1">Pedidos Totales</p>
-                                <h3 class="fw-bold text-success mb-0" id="pedidosTotales">0</h3>
-                                <small class="text-success">
-                                    <i class="fas fa-arrow-up me-1"></i>PostgreSQL
+                                <h3 class="fw-bold text-primary mb-0" id="pedidosTotales">0</h3>
+                                <small class="text-primary">
+                                    <i class="fas fa-arrow-up me-1"></i>+8.2%
                                 </small>
                             </div>
-                            <div class="text-success">
+                            <div class="text-primary">
                                 <i class="fas fa-shopping-cart fa-2x"></i>
                             </div>
                         </div>
@@ -321,7 +425,7 @@
                                 <p class="text-muted mb-1">Productos</p>
                                 <h3 class="fw-bold text-warning mb-0" id="totalProductos">0</h3>
                                 <small class="text-warning">
-                                    <i class="fas fa-exclamation-circle me-1"></i><span id="stockBajo">0</span> stock bajo
+                                    <i class="fas fa-minus me-1"></i>Stock bajo: <span id="stockBajo">0</span>
                                 </small>
                             </div>
                             <div class="text-warning">
@@ -338,7 +442,7 @@
                                 <p class="text-muted mb-1">Usuarios</p>
                                 <h3 class="fw-bold text-info mb-0" id="totalUsuarios">0</h3>
                                 <small class="text-info">
-                                    <i class="fas fa-arrow-up me-1"></i>Base de datos
+                                    <i class="fas fa-arrow-up me-1"></i>+12 nuevos
                                 </small>
                             </div>
                             <div class="text-info">
@@ -354,38 +458,48 @@
                 <!-- Sales Chart -->
                 <div class="col-xl-8">
                     <div class="chart-container">
-                        <div class="d-flex justify-content-between align-items-center mb-4">
-                            <h5 class="fw-bold mb-0">📈 Ventas Mensuales 2024</h5>
-                            <span class="badge bg-primary">Datos PostgreSQL</span>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="fw-bold mb-0">Ventas por Mes</h5>
+                            <div class="dropdown">
+                                <button class="btn btn-outline-primary btn-sm dropdown-toggle" data-bs-toggle="dropdown" id="yearSelector">
+                                    2024
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#" onclick="updateSalesChart(2024)">2024</a></li>
+                                    <li><a class="dropdown-item" href="#" onclick="updateSalesChart(2023)">2023</a></li>
+                                </ul>
+                            </div>
                         </div>
                         <div class="chart-wrapper">
-                            <div id="salesChart"></div>
+                            <canvas id="salesChart"></canvas>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Categories Chart -->
+                <!-- Categories Pie Chart -->
                 <div class="col-xl-4">
                     <div class="chart-container">
-                        <div class="d-flex justify-content-between align-items-center mb-4">
-                            <h5 class="fw-bold mb-0">🎯 Ventas por Categoría</h5>
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="fw-bold mb-0">Ventas por Categoría</h5>
                             <button class="btn btn-outline-secondary btn-sm" onclick="refreshCategoriesChart()">
                                 <i class="fas fa-sync-alt"></i>
                             </button>
                         </div>
-                        <div id="categoriesChart"></div>
+                        <div class="pie-chart-wrapper">
+                            <canvas id="categoriesChart"></canvas>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Activity & Top Products -->
+            <!-- Recent Activity & Top Products -->
             <div class="row g-4">
                 <!-- Recent Activity -->
                 <div class="col-xl-6">
                     <div class="chart-container">
-                        <h5 class="fw-bold mb-3">⚡ Actividad Reciente</h5>
-                        <div id="recentActivity" style="max-height: 400px; overflow-y: auto;">
-                            <!-- Real activity from database -->
+                        <h5 class="fw-bold mb-3">Actividad Reciente</h5>
+                        <div class="recent-activity" id="recentActivity">
+                            <!-- Activity items will be loaded here -->
                         </div>
                     </div>
                 </div>
@@ -393,9 +507,9 @@
                 <!-- Top Products -->
                 <div class="col-xl-6">
                     <div class="chart-container">
-                        <h5 class="fw-bold mb-3">🏆 Top Productos (Últimos 30 días)</h5>
+                        <h5 class="fw-bold mb-3">Productos Más Vendidos</h5>
                         <div id="topProducts">
-                            <!-- Real top products from database -->
+                            <!-- Top products will be loaded here -->
                         </div>
                     </div>
                 </div>
@@ -403,45 +517,59 @@
         </div>
     </main>
 
-    <!-- Bootstrap JS -->
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    
+    <script src="../js/chart.min.js"></script>
     <script>
         // 🚀 MODERN DASHBOARD WITH REAL POSTGRESQL DATA
         
+        // Global variables
         let salesChart = null;
         let categoriesChart = null;
         let isLoading = false;
 
-        // Initialize Dashboard
-        document.addEventListener('DOMContentLoaded', function() {
+        // ✅ Initialize Dashboard
+        document.addEventListener("DOMContentLoaded", function() {
             checkAdminAuth();
             initializeDashboard();
         });
 
         function checkAdminAuth() {
-            const currentUser = JSON.parse(localStorage.getItem('currentUser') || sessionStorage.getItem('currentUser') || '{}');
+            const currentUser = JSON.parse(localStorage.getItem("currentUser") || sessionStorage.getItem("currentUser") || "{}");
             
-            if (!currentUser.email || currentUser.role !== 'admin') {
-                alert('🔒 Acceso denegado. Requiere permisos de administrador.');
-                window.location.href = '../pages/login.html';
+            if (!currentUser.email || currentUser.role !== "admin") {
+                alert("🔒 Acceso denegado. Requiere permisos de administrador.");
+                window.location.href = "../pages/login.html";
                 return;
             }
             
-            const adminName = currentUser.nombre ? `${currentUser.nombre} ${currentUser.apellido || ''}`.trim() : 'Administrador';
-            document.getElementById('adminUserName').textContent = adminName;
+            // Update admin name with modern styling
+            const adminName = currentUser.nombre ? `${currentUser.nombre} ${currentUser.apellido || ""}`.trim() : "Administrador";
+            document.getElementById("adminUserName").textContent = adminName;
             
+            // Welcome animation
             showWelcomeMessage(adminName);
         }
 
         function showWelcomeMessage(name) {
-            const notification = createNotification('success', `¡Bienvenido, ${name}!`, 'Dashboard cargando datos reales...', 3000);
+            const notification = createNotification("success", `¡Bienvenido, ${name}!`, "Dashboard cargando...", 2000);
             document.body.appendChild(notification);
         }
 
         function initializeDashboard() {
+            // Sidebar toggle with smooth animation
+            document.getElementById("sidebarToggle").addEventListener("click", function() {
+                document.getElementById("adminSidebar").classList.toggle("collapsed");
+                document.getElementById("adminMainContent").classList.toggle("expanded");
+            });
+
+            // Initialize modern charts
             initializeModernCharts();
+            
+            // Load real data from PostgreSQL
             loadRealDashboardData();
+            
+            // Set up auto-refresh
             setupAutoRefresh();
         }
 
@@ -453,37 +581,27 @@
             showLoadingState();
             
             try {
-                console.log('🔗 Conectando a PostgreSQL...');
-                
-                const stats = await fetchData('../api/dashboard-stats.jsp');
-                
-                // Actualizar indicador de conexión
-                const connectionStatus = document.getElementById('connectionStatus');
-                if (connectionStatus) {
-                    if (stats.success) {
-                        connectionStatus.textContent = '✅ Conectado a PostgreSQL';
-                        connectionStatus.parentElement.className = 'badge bg-success px-3 py-2';
-                    } else {
-                        connectionStatus.textContent = '❌ Error PostgreSQL';
-                        connectionStatus.parentElement.className = 'badge bg-danger px-3 py-2';
-                    }
-                }
+                // Load all data in parallel
+                const [stats, monthlySales, categorySales, topProducts, recentActivity] = await Promise.all([
+                    fetchData("../api/dashboard-stats.jsp"),
+                    fetchData("../api/sales-monthly.jsp"),
+                    fetchData("../api/sales-category.jsp"),
+                    fetchData("../api/top-products.jsp"),
+                    fetchData("../api/recent-activity.jsp")
+                ]);
 
+                // Update all components with real data
                 updateStatsCards(stats);
+                updateSalesChart(monthlySales);
+                updateCategoriesChart(categorySales);
+                updateTopProducts(topProducts);
+                updateRecentActivity(recentActivity);
                 
-                console.log('📊 Datos cargados exitosamente:', stats.message);
+                showSuccessMessage("📊 Dashboard actualizado con datos reales de PostgreSQL");
                 
             } catch (error) {
-                console.error('❌ Database connection error:', error);
-                
-                // Actualizar indicador de conexión
-                const connectionStatus = document.getElementById('connectionStatus');
-                if (connectionStatus) {
-                    connectionStatus.textContent = '⚠️ Sin conexión';
-                    connectionStatus.parentElement.className = 'badge bg-warning px-3 py-2';
-                }
-                
-                showErrorMessage('❌ Error: ' + error.message);
+                console.error("Error loading dashboard data:", error);
+                showErrorMessage("❌ Error conectando a la base de datos: " + error.message);
                 loadFallbackData();
             } finally {
                 hideLoadingState();
@@ -493,92 +611,34 @@
         }
 
         async function fetchData(url) {
-            console.log(`📡 Fetching: ${url}`);
             const response = await fetch(url);
             if (!response.ok) {
                 throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             }
-            const data = await response.json();
-            console.log(`✅ Data received from ${url}:`, data);
-            return data;
+            return await response.json();
         }
 
-        // 💳 UPDATE STATS CARDS
+        // 💳 UPDATE STATS CARDS WITH REAL DATA
         function updateStatsCards(stats) {
             if (stats.error) {
                 throw new Error(stats.error);
             }
             
-            console.log('📊 Updating stats cards:', stats);
+            // Animate counters with real database values
+            animateCounter("ventasMes", stats.ventasMes, "$");
+            animateCounter("pedidosTotales", stats.totalPedidos);
+            animateCounter("totalProductos", stats.totalProductos);
+            animateCounter("totalUsuarios", stats.totalUsuarios);
             
-            animateCounter('ventasMes', stats.ventasMes, '$');
-            animateCounter('pedidosTotales', stats.pedidosTotales);
-            animateCounter('totalProductos', stats.totalProductos);
-            animateCounter('totalUsuarios', stats.totalUsuarios);
-            
-            const stockElement = document.getElementById('stockBajo');
+            // Update stock bajo with color coding
+            const stockElement = document.getElementById("stockBajo");
             if (stockElement) {
-                stockElement.textContent = stats.stockBajo || 0;
-                stockElement.className = stats.stockBajo > 10 ? 'fw-bold text-warning' : 'fw-bold text-danger';
-            }
-            
-            // Actualizar gráficas con datos reales
-            updateChartsWithRealData(stats);
-        }
-
-        function updateChartsWithRealData(stats) {
-            if (!stats) return;
-
-            console.log('📊 Actualizando gráficas con datos reales:', stats);
-
-            // Actualizar gráfico de ventas mensuales
-            if (salesChart && stats.ventasMensuales) {
-                const monthlyData = new Array(12).fill(0);
-                stats.ventasMensuales.forEach(item => {
-                    if (item.mes >= 1 && item.mes <= 12) {
-                        monthlyData[item.mes - 1] = parseFloat(item.total) || 0;
-                    }
-                });
-                console.log('📈 Datos mensuales:', monthlyData);
-                salesChart.updateSeries([{ 
-                    name: 'Ventas 2025',
-                    data: monthlyData 
-                }]);
-            }
-
-            // Actualizar gráfico de categorías  
-            if (categoriesChart && stats.ventasCategoria && stats.ventasCategoria.length > 0) {
-                const labels = stats.ventasCategoria.map(item => item.categoria);
-                const values = stats.ventasCategoria.map(item => parseFloat(item.total) || 0);
-                
-                console.log('🎯 Datos categorías:', { labels, values });
-                
-                categoriesChart.updateOptions({
-                    labels: labels,
-                    series: values
-                });
-            } else {
-                console.log('⚠️ No hay datos de categorías para mostrar');
-                // Mostrar mensaje cuando no hay datos
-                const chartContainer = document.querySelector('#categoriesChart');
-                if (chartContainer && (!stats.ventasCategoria || stats.ventasCategoria.length === 0)) {
-                    chartContainer.innerHTML = `
-                        <div class="d-flex flex-column align-items-center justify-content-center h-100" style="min-height: 300px;">
-                            <i class="fas fa-chart-pie fa-3x text-muted mb-3"></i>
-                            <p class="text-muted text-center">🎯 Ventas por Categoría</p>
-                            <small class="text-muted">No hay datos de ventas disponibles</small>
-                        </div>
-                    `;
-                }
-            }
-            
-            // Actualizar top productos
-            if (stats.topPerfumes) {
-                updateTopProducts(stats.topPerfumes);
+                stockElement.textContent = stats.stockBajo;
+                stockElement.className = stats.stockBajo > 10 ? "fw-bold text-warning" : "fw-bold text-danger";
             }
         }
 
-        function animateCounter(elementId, finalValue, prefix = '') {
+        function animateCounter(elementId, finalValue, prefix = "") {
             const element = document.getElementById(elementId);
             if (!element || finalValue === undefined) return;
 
@@ -591,18 +651,27 @@
                 const elapsedTime = currentTime - startTime;
                 const progress = Math.min(elapsedTime / duration, 1);
                 
+                // Smooth easing animation
                 const easedProgress = 1 - Math.pow(1 - progress, 4);
                 const currentValue = Math.floor(startValue + (numericValue - startValue) * easedProgress);
                 
-                let displayValue = currentValue.toLocaleString('es-MX');
-                if (prefix === '$') {
-                    displayValue = '$' + displayValue;
+                let displayValue = currentValue.toLocaleString("es-MX");
+                if (prefix === "$") {
+                    displayValue = "$" + displayValue;
                 }
                 
                 element.textContent = displayValue;
                 
                 if (progress < 1) {
                     requestAnimationFrame(updateCounter);
+                } else {
+                    // Final value with decimal precision for currency
+                    if (prefix === "$" && numericValue >= 1000) {
+                        element.textContent = "$" + numericValue.toLocaleString("es-MX", {
+                            minimumFractionDigits: 0,
+                            maximumFractionDigits: 0
+                        });
+                    }
                 }
             }
             
@@ -618,42 +687,55 @@
         function initModernSalesChart() {
             const options = {
                 series: [{
-                    name: 'Ventas 2024',
+                    name: "Ventas 2024",
                     data: []
                 }],
                 chart: {
-                    type: 'area',
+                    type: "area",
                     height: 320,
-                    fontFamily: 'Inter, system-ui, sans-serif',
-                    toolbar: { show: true },
+                    fontFamily: "Inter, system-ui, sans-serif",
+                    toolbar: {
+                        show: true,
+                        tools: {
+                            download: true,
+                            selection: false,
+                            zoom: true,
+                            zoomin: true,
+                            zoomout: true,
+                            pan: false,
+                            reset: true
+                        }
+                    },
                     animations: {
                         enabled: true,
-                        easing: 'easeinout',
+                        easing: "easeinout",
                         speed: 1000
                     }
                 },
-                colors: ['#3498db'],
+                colors: ["#3498db"],
                 fill: {
-                    type: 'gradient',
+                    type: "gradient",
                     gradient: {
                         shadeIntensity: 1,
-                        type: 'vertical',
+                        type: "vertical",
                         colorStops: [
-                            { offset: 0, color: '#3498db', opacity: 0.8 },
-                            { offset: 100, color: '#3498db', opacity: 0.1 }
+                            { offset: 0, color: "#3498db", opacity: 0.8 },
+                            { offset: 100, color: "#3498db", opacity: 0.1 }
                         ]
                     }
                 },
-                dataLabels: { enabled: false },
+                dataLabels: {
+                    enabled: false
+                },
                 stroke: {
-                    curve: 'smooth',
+                    curve: "smooth",
                     width: 3
                 },
                 xaxis: {
-                    categories: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+                    categories: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"],
                     labels: {
                         style: {
-                            fontSize: '12px',
+                            fontSize: "12px",
                             fontWeight: 500
                         }
                     }
@@ -661,25 +743,28 @@
                 yaxis: {
                     labels: {
                         formatter: function(value) {
-                            return '$' + value.toLocaleString('es-MX');
+                            return "$" + value.toLocaleString("es-MX");
+                        },
+                        style: {
+                            fontSize: "12px"
                         }
                     }
                 },
                 tooltip: {
-                    theme: 'dark',
+                    theme: "dark",
                     y: {
                         formatter: function(value) {
-                            return '$' + value.toLocaleString('es-MX');
+                            return "$" + value.toLocaleString("es-MX");
                         }
                     }
                 },
                 grid: {
-                    borderColor: '#f1f1f1',
+                    borderColor: "#f1f1f1",
                     strokeDashArray: 3
                 }
             };
 
-            salesChart = new ApexCharts(document.querySelector('#salesChart'), options);
+            salesChart = new ApexCharts(document.querySelector("#salesChart"), options);
             salesChart.render();
         }
 
@@ -687,28 +772,28 @@
             const options = {
                 series: [],
                 chart: {
-                    type: 'donut',
+                    type: "donut",
                     height: 350,
-                    fontFamily: 'Inter, system-ui, sans-serif',
+                    fontFamily: "Inter, system-ui, sans-serif",
                     animations: {
                         enabled: true,
-                        easing: 'easeinout',
+                        easing: "easeinout",
                         speed: 1200
                     }
                 },
-                colors: ['#e74c3c', '#3498db', '#27ae60'],
+                colors: ["#e74c3c", "#3498db", "#27ae60"],
                 labels: [],
                 plotOptions: {
                     pie: {
                         donut: {
-                            size: '70%',
+                            size: "70%",
                             labels: {
                                 show: true,
                                 total: {
                                     show: true,
-                                    label: 'Total Ventas',
+                                    label: "Total",
                                     formatter: function(w) {
-                                        return '$' + w.globals.seriesTotals.reduce((a, b) => a + b, 0).toLocaleString('es-MX');
+                                        return w.globals.seriesTotals.reduce((a, b) => a + b, 0).toLocaleString("es-MX");
                                     }
                                 }
                             }
@@ -716,31 +801,30 @@
                     }
                 },
                 legend: {
-                    position: 'bottom',
-                    fontSize: '12px',
+                    position: "bottom",
+                    fontSize: "12px",
                     fontWeight: 500
                 },
                 tooltip: {
-                    theme: 'dark',
+                    theme: "dark",
                     y: {
                         formatter: function(value, { seriesIndex, w }) {
                             const total = w.globals.seriesTotals.reduce((a, b) => a + b, 0);
                             const percentage = ((value / total) * 100).toFixed(1);
-                            return `$${value.toLocaleString('es-MX')} (${percentage}%)`;
+                            return `$${value.toLocaleString("es-MX")} (${percentage}%)`;
                         }
                     }
                 }
             };
 
-            categoriesChart = new ApexCharts(document.querySelector('#categoriesChart'), options);
+            categoriesChart = new ApexCharts(document.querySelector("#categoriesChart"), options);
             categoriesChart.render();
         }
 
         function updateSalesChart(salesData) {
             if (salesChart && salesData.data) {
-                console.log('📈 Updating sales chart with data:', salesData.data);
                 salesChart.updateSeries([{
-                    name: 'Ventas 2024',
+                    name: "Ventas 2024",
                     data: salesData.data.map(val => parseFloat(val) || 0)
                 }]);
             }
@@ -748,7 +832,6 @@
 
         function updateCategoriesChart(categoryData) {
             if (categoriesChart && categoryData.data && categoryData.labels) {
-                console.log('🎯 Updating categories chart:', categoryData);
                 categoriesChart.updateOptions({
                     series: categoryData.data.map(val => parseFloat(val) || 0),
                     labels: categoryData.labels
@@ -756,21 +839,18 @@
             }
         }
 
+        // 🏆 TOP PRODUCTS WITH REAL DATA
         function updateTopProducts(products) {
-            const container = document.getElementById('topProducts');
-            if (!container) return;
-            
-            if (!products || products.length === 0) {
-                container.innerHTML = '<div class="text-center text-muted py-4"><i class="fas fa-info-circle me-2"></i>No hay datos de productos disponibles</div>';
+            const container = document.getElementById("topProducts");
+            if (!container || !products || products.length === 0) {
+                container.innerHTML = "<div class="text-center text-muted py-4">No hay datos de productos disponibles</div>";
                 return;
             }
 
-            console.log('🏆 Updating top products:', products);
-            
             container.innerHTML = products.map((product, index) => `
-                <div class="d-flex align-items-center mb-3 p-3 rounded-3 ${index === 0 ? 'bg-light border-start border-4 border-warning' : 'border border-light'} activity-item">
+                <div class="d-flex align-items-center mb-3 p-3 rounded-3 ${index === 0 ? "bg-light border-start border-4 border-warning" : "border border-light"} activity-item">
                     <div class="me-3">
-                        <span class="badge ${index === 0 ? 'bg-warning' : index === 1 ? 'bg-info' : 'bg-secondary'} rounded-pill px-3 py-2">
+                        <span class="badge bg-gradient ${index === 0 ? "bg-warning" : index === 1 ? "bg-info" : "bg-secondary"} rounded-pill px-3 py-2">
                             #${index + 1}
                         </span>
                     </div>
@@ -780,22 +860,19 @@
                     </div>
                     <div class="text-end">
                         <div class="fw-bold text-success fs-6">${product.totalVendido} ventas</div>
-                        <small class="text-muted">$${parseFloat(product.ingresos || 0).toLocaleString('es-MX')}</small>
+                        <small class="text-muted">$${parseFloat(product.precio).toLocaleString("es-MX")}</small>
                     </div>
                 </div>
-            `).join('');
+            `).join("");
         }
 
+        // 📰 RECENT ACTIVITY WITH REAL DATA
         function updateRecentActivity(activities) {
-            const container = document.getElementById('recentActivity');
-            if (!container) return;
-            
-            if (!activities || activities.length === 0) {
-                container.innerHTML = '<div class="text-center text-muted py-4"><i class="fas fa-info-circle me-2"></i>No hay actividad reciente en las últimas 24 horas</div>';
+            const container = document.getElementById("recentActivity");
+            if (!container || !activities || activities.length === 0) {
+                container.innerHTML = "<div class="text-center text-muted py-4">No hay actividad reciente</div>";
                 return;
             }
-
-            console.log('⚡ Updating recent activity:', activities);
 
             container.innerHTML = activities.map(activity => `
                 <div class="d-flex align-items-center activity-item p-3 rounded-3 mb-2">
@@ -806,20 +883,20 @@
                         <div class="fw-medium text-dark">${activity.texto}</div>
                         <small class="text-muted">
                             <i class="fas fa-clock me-1"></i>${activity.tiempo}
-                            ${activity.cliente ? ` • ${activity.cliente}` : ''}
+                            ${activity.cliente ? ` • ${activity.cliente}` : ""}
                         </small>
                     </div>
                 </div>
-            `).join('');
+            `).join("");
         }
 
-        // 🔄 REFRESH FUNCTIONS
+        // 🔄 REFRESH DASHBOARD
         function refreshDashboard() {
-            const button = event.target.closest('button');
+            const button = event.target.closest("button");
             const originalHTML = button.innerHTML;
             
             button.disabled = true;
-            button.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Actualizando...';
+            button.innerHTML = "<i class="fas fa-spinner fa-spin me-2"></i>Actualizando...";
             
             loadRealDashboardData().finally(() => {
                 button.disabled = false;
@@ -827,46 +904,36 @@
             });
         }
 
-        function refreshCategoriesChart() {
-            console.log('🔄 Refreshing categories chart...');
-            fetchData('../api/sales-category.jsp')
-                .then(updateCategoriesChart)
-                .catch(error => {
-                    console.error('Error refreshing categories:', error);
-                    showErrorMessage('Error actualizando categorías: ' + error.message);
-                });
-        }
-
+        // ⏰ AUTO REFRESH
         function setupAutoRefresh() {
             setInterval(() => {
-                console.log('⏰ Auto-refreshing dashboard...');
                 loadRealDashboardData();
             }, 300000); // 5 minutes
         }
 
         // 🎨 UI HELPERS
         function showLoadingState() {
-            document.querySelectorAll('.stats-card h3').forEach(el => {
-                el.classList.add('loading-pulse');
+            document.querySelectorAll(".stats-card h3").forEach(el => {
+                el.classList.add("loading-pulse");
             });
         }
 
         function hideLoadingState() {
-            document.querySelectorAll('.stats-card h3').forEach(el => {
-                el.classList.remove('loading-pulse');
+            document.querySelectorAll(".stats-card h3").forEach(el => {
+                el.classList.remove("loading-pulse");
             });
         }
 
         function createNotification(type, title, message, duration = 3000) {
-            const notification = document.createElement('div');
-            notification.className = 'position-fixed top-0 end-0 p-3';
-            notification.style.zIndex = '9999';
+            const notification = document.createElement("div");
+            notification.className = "position-fixed top-0 end-0 p-3";
+            notification.style.zIndex = "9999";
             
             const iconMap = {
-                success: 'check-circle text-success',
-                error: 'exclamation-triangle text-danger',
-                info: 'info-circle text-info',
-                warning: 'exclamation-circle text-warning'
+                success: "check-circle text-success",
+                error: "exclamation-triangle text-danger",
+                info: "info-circle text-info",
+                warning: "exclamation-circle text-warning"
             };
 
             notification.innerHTML = `
@@ -885,36 +952,42 @@
         }
 
         function showSuccessMessage(message) {
-            const notification = createNotification('success', '✅ Éxito', message);
+            const notification = createNotification("success", "✅ Éxito", message);
             document.body.appendChild(notification);
         }
 
         function showErrorMessage(message) {
-            const notification = createNotification('error', '❌ Error', message);
+            const notification = createNotification("error", "❌ Error", message);
             document.body.appendChild(notification);
         }
 
         function updateLastUpdateTime() {
             const now = new Date();
-            const timeString = now.toLocaleTimeString('es-MX');
+            const timeString = now.toLocaleTimeString("es-MX", { 
+                hour: "2-digit", 
+                minute: "2-digit",
+                second: "2-digit"
+            });
+            
             console.log(`📊 Dashboard updated at ${timeString}`);
         }
 
+        // 🔐 LOGOUT
         function logout() {
-            if (confirm('🔒 ¿Estás seguro de que deseas cerrar sesión?')) {
-                if (typeof authSystem !== 'undefined') {
+            if (confirm("🔒 ¿Estás seguro de que deseas cerrar sesión?")) {
+                if (typeof authSystem !== "undefined") {
                     authSystem.logout();
                 } else {
-                    localStorage.removeItem('currentUser');
-                    sessionStorage.removeItem('currentUser');
+                    localStorage.removeItem("currentUser");
+                    sessionStorage.removeItem("currentUser");
                 }
-                window.location.href = '../pages/login.html';
+                window.location.href = "../pages/login.html";
             }
         }
 
         // 📉 FALLBACK DATA
         function loadFallbackData() {
-            console.warn('⚠️ Loading fallback data...');
+            console.warn("Using fallback data due to database connection issues");
             
             const fallbackStats = {
                 ventasMes: 28500,
@@ -925,20 +998,7 @@
             };
             
             updateStatsCards(fallbackStats);
-            
-            // Fallback chart data
-            const fallbackSalesData = {
-                data: [18500, 15200, 22800, 26400, 31200, 28900, 25600, 27300, 29800, 33400, 45600, 52300]
-            };
-            updateSalesChart(fallbackSalesData);
-            
-            const fallbackCategoryData = {
-                labels: ['Perfumes Mujer', 'Perfumes Hombre', 'Fragancias Unisex'],
-                data: [45000, 35000, 20000]
-            };
-            updateCategoriesChart(fallbackCategoryData);
-            
-            showErrorMessage('⚠️ Usando datos de respaldo. Verifica la conexión a PostgreSQL.');
+            showErrorMessage("⚠️ Usando datos de respaldo. Verifica la conexión a PostgreSQL.");
         }
     </script>
 </body>
